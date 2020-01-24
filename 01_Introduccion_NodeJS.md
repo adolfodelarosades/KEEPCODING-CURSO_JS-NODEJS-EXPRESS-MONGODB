@@ -21,11 +21,29 @@
    
 ### Servidores de aplicaciones
 
-* **En otros lenjuajes se utiliza un servidor de aplicaciones donde cargamos la nuestra, como **Tomcat**, **IIS**, etc.**
-* También hay múltiples lenguajes que se usan como una extensión de un servidor como **Apache**, **nginx**, etc., que es quien maneja las conexiones, como por ejemplo **PHP**.
+* En otros lenjuajes se utiliza un *Servidor de Aplicaciones* donde cargamos la nuestra, como **Tomcat**, **IIS**, etc.
+* También hay múltiples lenguajes que se usan como una extensión de un *Servidor Web* como **Apache**, **nginx**, etc., que es quien maneja las conexiones, como por ejemplo **PHP**.
 * **En Node.js nuestra aplicación realiza directamente todas las funciones de un servidor Web o de Aplicacaciones**.
 
+### Motor V8
 
+* Motor JavaScript creado por Google para Chrome.
+* Escrito en C++
+* Multiplataforma (Win, Linux, Mac)
+* Muy rápido
+
+### Versiones de Node.js
+
+* Versiones 4.x -> LTS (Long Term Service)
+* Versiones 5.x -> Estables, con las últimas novedades
+* A partir de la versión 4.0 se incorporan muchas de las nuevas características de ECMAScript versión 6.
+
+**Node.js empezo por el año 2011**
+
+### Límite de memoria
+
+* Actualmente, por defecto tiene un límite de memoria de 512 MB en sistemas de 32 bits, **1GB en sistemas de 64 bits**.
+* El límite se puede aumentar mediante el establecimiento de `--max_old_space_size` un máximo de `~ 1,024 (1GiB) (32 bits) y ~ 1,741 (1.7GiB) (64 bits)`, pero se recomienda dividir el proceso en varios workers si se llega a los límites.
    
    
    
