@@ -18,9 +18,9 @@
 
 ### ¿Orientado a evento?
 
-* En la programación secuencial es el programador quien decide el flujo.
+#### En la programación secuencial es el programador quien decide el flujo.
    El orden en que se ejecutan los pasos es totalmente secuencial.
-* En la programación orientada a eventos, el usuario o los programas clientes son quienes definen el flujo
+#### En la programación orientada a eventos, el usuario o los programas clientes son quienes definen el flujo
    Aquí no determinamos el orden en que van a ocurrir las cosas, es el usuario de la aplicación el que determinará que se va a ir ejecutando según las acciones que seleccione en la aplicación, (presionar botones, scroll, enlaces, etc.).
    
 ### Servidores de aplicaciones
