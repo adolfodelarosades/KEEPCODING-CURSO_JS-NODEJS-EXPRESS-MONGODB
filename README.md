@@ -4,7 +4,7 @@
 
 <ol type="1">
    <li>Introducción a Node.js</li>
-   <ol type="1">
+   <ol type="1" start="1">
       <li>Introducción (1:49)</li>
       <li>¿Qué es Node.js? (11:42)</li>
       <li>Instalando Node.js (9:44)</li>
