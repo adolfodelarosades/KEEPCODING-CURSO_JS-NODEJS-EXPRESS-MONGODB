@@ -184,7 +184,7 @@
  
    77.- Resumen y despedida (0:38)
   
-10. ¡Enhorabuena!
+1. ¡Enhorabuena!
  
    Evalúa nuestra formación
  
