@@ -16,14 +16,12 @@
 
 ### ¿Orientado a evento?
 
-#### * En la programación secuencial es el programador quien decide el flujo.
-   El orden en que se ejecutan los pasos es totalmente secuencial.
-#### * En la programación orientada a eventos, el usuario o los programas clientes son quienes definen el flujo
-   Aquí no determinamos el orden en que van a ocurrir las cosas, es el usuario de la aplicación el que determinará que se va a ir ejecutando según las acciones que seleccione en la aplicación, (presionar botones, scroll, enlaces, etc.).
+* **En la programación secuencial es el programador quien decide el flujo.** El orden en que se ejecutan los pasos es totalmente secuencial.
+* **En la programación orientada a eventos, el usuario o los programas clientes son quienes definen el flujo.**  Aquí no determinamos el orden en que van a ocurrir las cosas, es el usuario de la aplicación el que determinará que se va a ir ejecutando según las acciones que seleccione en la aplicación, (presionar botones, scroll, enlaces, etc.).
    
 ### Servidores de aplicaciones
 
-* En otros lenjuajes se utiliza un servidor de aplicaciones donde cargamos la nuestra, como **Tomcat**, **IIS**, etc.
+* **En otros lenjuajes se utiliza un servidor de aplicaciones donde cargamos la nuestra, como **Tomcat**, **IIS**, etc.**
 * También hay múltiples lenguajes que se usan como una extensión de un servidor como **Apache**, **nginx**, etc., que es quien maneja las conexiones, como por ejemplo **PHP**.
 * **En Node.js nuestra aplicación realiza directamente todas las funciones de un servidor Web o de Aplicacaciones**.
 
