@@ -45,9 +45,12 @@
 * Actualmente, por defecto tiene un límite de memoria de 512 MB en sistemas de 32 bits, **1GB en sistemas de 64 bits**.
 * El límite se puede aumentar mediante el establecimiento de `--max_old_space_size` un máximo de `~ 1,024 (1GiB) (32 bits) y ~ 1,741 (1.7GiB) (64 bits)`, pero se recomienda dividir el proceso en varios workers si se llega a los límites.
    
-   
-   
+### Ventajas de Node.js
 
+Node.js tiene grandes ventajas reales en:
+
+* Aplicaciones de red, como APIs, servicios en tiempo real, servidores de comunicaciones, etc.
+* Aplicaciones cuyos clientes están hechos en JavaScript, pues compartimos código y estructuras entre el servidor y el cliente.
  
 ## 3.- Instalando Node.js (9:44)
  
