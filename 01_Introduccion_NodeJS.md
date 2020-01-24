@@ -9,7 +9,7 @@
 ### ¿Qué es Node.js? 
 
 #### * Es un interprete de JavaScript
-#### * Inicialmente para correr en servidores
+#### * Inicialmente para correr en servidores
    Actualmente ya se usa en muchas otras plataformas, por ejemplo para ejecutar programas como GRUNT, GULP, WEBPACK, etc. También podemos hacer aplicaciones de escritorio por ejemplo con ELECTRON
 #### * Asíncrono
    Determinadas cosas ocurren o terminan en un momento distinto del tiempo, de cuando las hemos lanzado.
