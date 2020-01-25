@@ -447,4 +447,4 @@ Podemos ver más detalles de todo lo que incluye el archivo `package.json`y mejo
 
 ## 6.1.- Para Descargar
 
-[PDF de la sección]()
+[PDF de la sección](https://github.com/adolfodelarosades/KEEPCODING-CURSO_JS-NODEJS-EXPRESS-MONGODB/blob/master/pdfs/Seccion01.pdf)
