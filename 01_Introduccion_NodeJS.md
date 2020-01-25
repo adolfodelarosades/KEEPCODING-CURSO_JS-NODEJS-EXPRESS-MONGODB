@@ -53,6 +53,15 @@ Node.js tiene grandes ventajas reales en:
 * Aplicaciones cuyos clientes están hechos en JavaScript, pues compartimos código y estructuras entre el servidor y el cliente.
  
 ## 3.- Instalando Node.js (9:44)
+
+### Distintas formas
+
+Se puede hacer:
+
+* Desde el instalador oficial [node.js.org](https://nodejs.org/es/)
+* Con un instalador de paquetes
+* Compilando manualmente
+
  
 ## 4.- Ejercicio: un servidor básico (15:28)
  
