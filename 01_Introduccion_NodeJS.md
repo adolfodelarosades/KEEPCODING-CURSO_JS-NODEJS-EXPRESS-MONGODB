@@ -214,17 +214,92 @@ Con esto ya tenemos preparado nuestro servidor que responde peticiones enviando 
 
 Con todo esto ya tenemos listo nuestro servidor para arrancar.
 
+### Ejecutar
 
+Existen dos formas diferentes para poder ejecutarlo:
 
+```sh
+$ node index.js
+```
 
+Con **nodemon**:
 
+```sh
+$ npm install nodemon -g
+$ nodemon
+```
 
+### Ejecutar nuestro ejemplo en Node
 
+Para ejecutar nuestro ejemplo en **Node**:
 
+* Abrir una Terminal.
+* Ejecutar el comando: 
+```sh
+node servidor_basico.js
+```
+<img src="/images/levantar-servidor-terminal.png">
 
+Para ejecutar nuestro ejemplo desde el navegador:
 
+* Abrir la URL `127.0.0.1:1337` o `localhost:1337` en el navegador Chrome.
 
- 
+<img src="/images/levantar-servidor-navegador.png">
+<img src="/images/levantar-servidor-localhost.png">
+
+Podemos realizamos cambios para que me responda html:
+
+```js
+var http = require('http');
+
+var server = http.createServer(function(request, response) {
+    response.writeHead(200, { 'Content-Type': 'text/html; charset=UTF-8' });
+    response.end('<h1>Wake up, Neo...</h1>');
+});
+
+// Arrancamos el servidor
+server.listen(1337, '127.0.0.1');
+console.log('Servidor arrancado en 127.0.0.1:1337');
+```
+
+Si quiero ver los cambios en el navegador aun que actualice el navegador no los veo, esto es por que es necesario **reiniciar el servidor**, una vez hecho esto veremos los cambios.
+
+<img src="/images/levantar-servidor-html.png">
+
+Por lo que **cada vez que yo haga algún cambio en el código tengo que parar y volver a arrancar el servidor**, para evitar hacer esto usaremos **nodemon** el cual monitoriza nuestro archivo de código fuente y cada que nosotros lo guardemos reiniciara el servidor.
+
+### Intalar nodemon
+
+Usar el comando: 
+
+```sh
+sudo npm install nodemon -g
+```
+<img src="/images/install-nodemon">
+
+**npm** recoge del repositorio todas las dependencias que tiene este paquete para descargarlas e instalarlas.
+
+### Ejecutar nuestro ejemplo con nodemon
+
+Para ejecutar nuestro ejemplo con **nodemon**:
+
+* Abrir una Terminal.
+* Ejecutar el comando:
+```sh
+nodemon servidor_basico.js
+```
+<img src="/images/nodemon-execute.png">
+
+Lo que nos indica **nodemon** con los mensajes que nos muestra es que esta monitorizando toda la carpeta por lo cual, cualquier cambio que se haga en los archivos dentro de la carpeta provocará que **nodemon** reinicie el servidor.
+
+Por lo que si hacemos algún cambio en nuestro archivo `servidor_basico.js` y lo salvamos provocara que el servidor se reinicie inmediatamente.
+
+<img src="/images/nodemon-reexecute.png">
+
+Y si vamos al navegador y recargamos la página veremos los cambios.
+
+<img src="/images/navegador-change.png">
+
 ## 5.- NPM (5:35)
  
 ## 6.- Ejercicio: npm y package.json (7:20)
