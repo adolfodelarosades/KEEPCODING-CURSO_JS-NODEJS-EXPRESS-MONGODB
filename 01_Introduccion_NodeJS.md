@@ -94,7 +94,7 @@ A partir de aquí ya podremos ejecutar:
 
 `npm -g --depth=0`: Para ver la lista de paquetes instalados.
 
-<img src="/images/node-version">
+<img src="/images/node-version.png">
 
 ### A través del instalador - actualizar
 
