@@ -275,7 +275,7 @@ Usar el comando:
 ```sh
 sudo npm install nodemon -g
 ```
-<img src="/images/install-nodemon">
+<img src="/images/install-nodemon.png">
 
 **npm** recoge del repositorio todas las dependencias que tiene este paquete para descargarlas e instalarlas.
 
