@@ -173,6 +173,57 @@ nvm use system # en linux
 Podemos tener hasta 7 versiones diferentes instaladas pero solo una activa.
 
 ## 4.- Ejercicio: un servidor básico (15:28)
+
+Para crear nuestro servidor HTTP utilizaremos una librería del core de Node que se llama `http` que nos permite  no tener que programar los detalles de este protocolo, simplemente utilizaremos la librería que ya sabe hablar `http` con un cliente.
+
+En nuestra carpeta de trabajo crear el archivo `servidor_basico.js`.
+
+* Ir a `servidor_basico.js`
+* Introducir el siguiente có
+* Ir a `servidor_basico.js`digo:
+```js
+var http = require('http');
+
+var server = http.createServer(function(request, response) {
+    response.writeHead(200, {'Content-Type': 'text/plain'});
+    response.end('Wake up, Neo...\n');
+});
+
+// Arrancamos el servidor
+server.listen(1337, '127.0.0.1');
+console.log('Servidor arrancado en 127.0.0.1:1337');
+```
+
+Vamos a explicar un poco el que es lo que estta haciendo este código:
+
+`var http = require('http');`: Requerimos o importamos el módulo `http` de los modulos de Node, con esto ya tenemos el módulo disponible para usar.
+
+`var server = http.createServer()`: Aquí le estamos diciendo a `http` que nos cree un servidor y que lo almacene en la variable `server`. 
+
+`var server = http.createServer(function(request, response) {`: El servidor que nos va a crear recibirá peticiones que intentara resolver mediante la función que tiene como parámetro (callback) la cual a su vez tiene los parámetros `request` y `response`.
+
+`response.writeHead(200, {'Content-Type': 'text/plain'});`: En el cuerpo de la función usaremos `response` para añadir nuestra respuesta, lo primero es indicar el código de retorno de nuestra respuesta y el tipo de respuesta que vamos a mandar, esto se hace en la cabecera.
+
+`response.end('Wake up, Neo...\n');` Aquí indicamos el contenido de la respuesta.
+
+Con esto ya tenemos preparado nuestro servidor que responde peticiones enviando el texto `Wake up, Neo...\n`. Cualquier petición que llegue responderá con un código 200, un texto plano que dice `Wake up, Neo...\n`.
+
+`server.listen(1337, '127.0.0.1');` Lo siguiente que debemos hacer es arrancar el servidor, para lo cual debemos indicarle un puerto que no estemos usando en este caso el `1337` y también debemos indicarle a que ip debe engancharse ese servidor para arrancar, usaremos la `127.0.0.1` que significa `localhost`, nuestra maquina local.
+
+`console.log('Servidor arrancado en 127.0.0.1:1337');`: Una vez arrancado el servidor queremos que salga un mensaje que lo indique.
+
+Con todo esto ya tenemos listo nuestro servidor para arrancar.
+
+
+
+
+
+
+
+
+
+
+
  
 ## 5.- NPM (5:35)
  
