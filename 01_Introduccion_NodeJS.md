@@ -301,7 +301,82 @@ Y si vamos al navegador y recargamos la página veremos los cambios.
 <img src="/images/navegador-change.png">
 
 ## 5.- NPM (5:35)
- 
+
+**Node Package Manager** es un gestor de paquetes que nos ayuda a gestionar las dependencias de nuestro proyecto.
+
+Entre otras cosas nos permite:
+
+* Instalar librerías o programas de terceros
+* Eliminarlas
+* Mantenerlas actualizadas
+
+Generalmente se instala conjuntamente con **NodeJS** de forma automática.
+
+### NPM - package.json
+
+Se apoya de un fichero llamado `package.json` para guardar el estado de las librerías.
+
+Lo crearemos con el comando: `npm init`
+
+El fichero `package.json` guarda información que necesita `npm` para saber que librerías tiene instaladas, sus versiones, 
+
+
+[La documentación de este fichero](https://docs.npmjs.com/files/package.json)
+
+Cuando ejecutemos el comando `npm init` se nos realizarán algunas preguntas, por ejemplo:
+
+* Nombre de la aplicación
+* La versión de nuestra aplicación
+* Descripción de la aplicación
+* Punto de entrada para ejecutarla
+* Y más cosas ...
+
+Finalmente todo se guardara en el archivo `package.json` que tendra una estructura JSON, con todos los datos que le dimos al pulsar el comando `npm init`.
+
+#### Como se instalar una librería (ej. chance)
+
+Para instalar cualquier librería adicional usaremos el comando:
+
+```sh
+npm install chance --save
+```
+Con este `--save` le estamos diciendo que apunte en el archivo `package.json` una dependencia de esa librería indicando la versión que usa:
+
+```js
+"dependencies": {
+  "chance": "^0.8.0"
+}
+```
+
+### NPM - global o local
+
+Instalación local, en la carpeta del proyecto
+
+`npm install <paquete> [--save]`
+
+Instalación global (en `usr/local/lib/node_modules`)
+
+`npm install -g <paquete>`
+
+Si el paquete tiene ejecutables hará un vínculo a ellos en `/usr/local/bin`
+
+### NPM - modificadores de versión
+
+Cada librería lleva un identificador de versión
+```js
+"dependencies": {
+  "chance": "^0.8.0"
+}
+```
+NPM las parsea usando [Semver](https://github.com/npm/node-semver)
+
+Por defecto se establece un **Caret Range** (^):
+
+* Ejemplos **"^1.2.3" "^0.2.5" "^0.0.4"
+* Allows changes that do not modify the left-most non-zero digit in the [major, mino, patch] tuple.
+
+Nos permite indicar como debe actualizar las versiones de nuestros paquetes.
+
 ## 6.- Ejercicio: npm y package.json (7:20)
  
 ## 6.1.- Para Descargar
