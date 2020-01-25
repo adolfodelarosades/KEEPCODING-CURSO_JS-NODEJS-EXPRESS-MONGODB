@@ -368,7 +368,7 @@ Cada librería lleva un identificador de versión
   "chance": "^0.8.0"
 }
 ```
-NPM las parsea usando [Semver](https://github.com/npm/node-semver)
+NPM las parsea usando [Semver](https://github.com/npm/node-semver), aquí podemos buscar **Caret Range** para ver la información detallada de como debemos utilizar esta característica, así como tambieén el uso de otros modificadores para indicarle a `npm` como queremos que actualice nuestra librería cuando vaya a hacerlo.
 
 Por defecto se establece un **Caret Range** (^):
 
@@ -378,5 +378,73 @@ Por defecto se establece un **Caret Range** (^):
 Nos permite indicar como debe actualizar las versiones de nuestros paquetes.
 
 ## 6.- Ejercicio: npm y package.json (7:20)
- 
+
+Vamos a crear la carpeta `ejemplo_npm`
+
+* Ir a la carpeta `cd ejemplo_npm`
+* Pulsar el comando `npm init`
+
+Nos preguntara varias cosas:
+
+<img src="/images/npm-init.png">
+
+Al contestar todas las preguntas y seleccionar `yes` dentro de nuestra carpeta `ejemplo_npm` nos creara el archivo `package.json` con la siguiente información:
+
+```js
+{
+  "name": "ejemplo_npm",
+  "version": "1.0.0",
+  "description": "Esto es un ejemplo de un fichero package.json",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adolfo de la Rosa",
+  "license": "MIT"
+}
+```
+
+### Instalar la librería chance
+
+Para instalar la librería `change` y la almacene de forma local pulsamos el comando:
+
+```sh
+npm install chance --save
+```
+<img src="/images/install-chance.png">
+
+La dependencia se ha descargado e instalado por lo que se ha modificado el archivo `package.json` para incluirla:
+```js
+{
+  "name": "ejemplo_npm",
+  "version": "1.0.0",
+  "description": "Esto es un ejemplo de un fichero package.json",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adolfo de la Rosa",
+  "license": "MIT",
+  "dependencies": {
+    "chance": "^1.1.4"
+  }
+}
+```
+Si observamos la carpeta `ejemplo_npm` vemos que se ha incluido la carpeta `node_modules` que dentro contiene la carpeta `chance` que entre otras cosas contiene su propio archivo `package.json` y todo el código fuente necesario para utilizar esta librería.
+
+<img src="/images/package-chance.png">
+
+Si en lugar de instalar el paquete de forma local lo instalaramos de forma global no se instalaría en esta carpeta `node_modules` sino en la carpeta `/usr/local/bin` como lo hicimos con `nodemon`.
+
+<img src="/images/nodemon-global.png">
+
+Vemos que hay una entrada `nodemon` y que apunta a `../lib/node_modules/nodemon/bin/nodemon.js`
+
+Por lo que si en mi `path`tengo incluida la carpeta `/usr/local/bin` yo puedo ejecutar el comando `nodemon` en cualquier momento y se ejecutara el archivo `../lib/node_modules/nodemon/bin/nodemon.js` que se instalo de manera global. Por eso funcionan las librerías que se instalan globalmente por que se estan incluyendo en el `path` y las puedo ejecutar desde cualquier ruta.
+
+Podemos ver más detalles de todo lo que incluye el archivo `package.json`y mejorar nuestra librería en [La documentación de este fichero](https://docs.npmjs.com/files/package.json)
+
+
 ## 6.1.- Para Descargar
+
+[PDF de la sección]()
