@@ -391,5 +391,69 @@ Dentro de nuetra carpeta `cursonode`:
 * Dentro de `modulos` crear el archivo `suma.js.`
 * Incluir el siguiente código:
 ```js
-```
+"use strict";
 
+var suma = function(a,b) {
+  return a + b;
+}
+
+module.exports = suma;
+```
+* Dentro de `modulos` crear el archivo `index.js.`
+* Incluir el siguiente código:
+```js
+"use strict";
+
+var suma = requiere('./suma');
+
+console.log(suma(5, 6));
+```
+* Ejecutemos nuestro programa con `nodemon index.js`
+
+La salida es:
+
+<img src="/images/modulo01.png">
+
+Podríamos tener tambien un modulo con varias operaciones matemáticas.
+
+* Dentro de `modulos` crear el archivo `operaciones.js.`
+* Incluir el siguiente código:
+```js
+"use strict";
+
+var suma = function(a, b) {
+  return a + b;
+}
+var resta = function(a, b) {
+  return a - b;
+}
+var multiplicacion = function(a, b) {
+  return a * b;
+}
+var division = function(a, b) {
+  return a / b;
+}
+
+module.exports = {
+  suma: suma,
+  resta: resta,
+  multiplicacion: multiplicacion,
+  division: division
+}
+```
+* En el archivo `index.js` incluir el siguiente código:
+```js
+"use strict";
+
+var suma = require('./suma');
+var math = require('./operaciones');
+
+console.log(suma(5, 6));
+console.log(math.suma(5, 6));
+console.log(math.resta(5, 6));
+console.log(math.multiplicacion(5, 6));
+console.log(math.division(5, 6));
+```
+La salida es:
+
+<img src="/images/modulo02.png">
