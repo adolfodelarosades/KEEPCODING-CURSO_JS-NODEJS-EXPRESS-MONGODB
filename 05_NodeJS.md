@@ -111,7 +111,7 @@ Adios. Antes de terminar me despido.
 
 Como podemos observar todas las instrucciones posteriores a `process.exit(0);` ya no se ejecutaran.
 
-#### Código final
+### Código final
 ```js
 "use strict";
 
@@ -143,9 +143,63 @@ La salida es:
 <img src="/images/process04.png">
 
 ## 38.- Event loop (3:29)
- 
+
+Node usa un solo hilo. *Conceptualmente Node usa un solo hilo puede ser que internamente use alguno más, pero para nuestros ojos usará un solo hilo. Mientras este hilo de ejecución este ejecutando algo dejamos de antender a otro tipo de peticiones.*
+
+Node tiene un bucle interno, que podemos llamar 'event loop' donde e cada vuelta ejecuta todo lo que tiene en esa 'fase', dejando los callbacks pendientes para otra vuelta. *Node internamente tiene un buccle interno, que podemos llamar 'event loop' donde va ejecutando código **sincrono**, ejecutando todo el código sincrono que puede hasta que lo termina de ejecutar, una vez que ha terminado comprueba si tiene algún callback pendiente de resolver, da otra vuelta al 'event loop' comprueba los callbacks pendientes, sino tiene un callback que haya terminado da otra vuelta en el 'event loop', no hay nigun callback que haya terminado da otra vuelta en el 'event loop', en el momento que haya un callback que haya terminado Node comprueba en esa vuelta del 'event loop' que si hay algo terminado y ejecuta ese código, cuando termine ese código da otra vuelta en el 'event loop' y sigue resolviendo calbacks así sucesivamente.*
+
+La siguiente vuelta mira haber si a terminado algún callback y si es así ejecuta su handlers.
+
+El equivalente de esta construcción:
+
+```js
+process.nextTick(function() {
+   console.log('Siguiente vuelta del event loop, whooouuu!');
+});
+```
+Es como decir a Node "Cuando vuelvas a comprobar los callbacks finalizados haz esto!"
+
+### Non blocking
+
+
+Si Node se quedara esperando hasta que termine una query o una petición a Facebook, acumularía demasiados eventos pendientes y dejaría de atender a las siguientes peticiones, ya que como dijimos **usa un solo hilo**.
+
+*Por lo tanto nuestro código debería estar estructurado de tal manera que no bloque o bloque lo menos posible ese hilo, por tanto si tenemos que hacer trabajos pesados no los hagamos todos seguidos o a la vez por que dejariamos de atender otras peticiones. 
+Por ejemplo si nosotros hicieramos las consultas a la BD o las escrituras o lecturas a disco de forma sincrona no usaramos funciones asíncronas, bloqueariamos ese hilo de ejecución mientras esta leyendo el fichero de disco sin poder hacer otras cosas, con lo cual se quedaría el hilo parado hasta que se resolviera esa lectura, eso no nos interesa preferimos que mientras esta haciendo la lectura en BD o en el File System pueda ir haciendo otras cosas y cuando termine que nos avice el sistema operativo y nuestr 'event loop' cazaría ese aviso y ejecutaría el callback que hubiesemos programado*
+
+Por eso todos las llamadas a funciones que usan IO (por ejemplo escritura o lectura en disco, la red, bases de datos, etc) se hacen de forma asíncrona. Se aparcan para que nos avisen cuando terminen.
+
 ## 39.- EventEmitter (1:08)
- 
+
+El EventEmitter es un objeto muy potente de Node. Usando un EventEmitter podemos colgar eventos a un identificador. Por ejemplo:
+
+```js
+eventEmitter.on('llamar telefono', suenaTelefono);
+
+function suenaTelefono() {
+   ...
+}
+```
+Ejecutara la función `suenaTelefono` cuando ocurra el evento nombrado con el identificador `llamar telefono`.
+
+Y podemos emitir el identificador cuando queremos que sus eventos 'salten'
+```js
+eventEmitter.emit('llamar telefono');
+```
+Ejecutaría todos los callbacks que esten colgados de este identificador.
+
+Incluso podemos darle argumentos al identificador para que se los dé a los manejadores.
+```js
+eventEmitter.emit('llamar telefono', 'madre');
+```
+
+Nuestro manejador recibirá el parámetro.
+```js
+var suenaTelefono = funtion(quien){
+   ...
+}
+```
+
 ## 40.- Ejercicio: EventEmitter (6:31)
  
 ## 41.- Módulos (7:29)
