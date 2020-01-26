@@ -369,7 +369,7 @@ Otra forma de hacer algo parecido es si usamos **npm** a partir de 2.0 podemos a
 }
 ```
 
-[Más info](https://docs.npmjs.com/files/package.json#local-paths)
+[Más info sobre Local Paths§](https://docs.npmjs.com/files/package.json#local-paths)
 
 ### ¿module.exports o exports?
 
@@ -384,3 +384,12 @@ Si asignamos algo directamente a `exports` deja de ser un alias. Solo podemos us
 Principalmente podemos encontrar módulos de terceros en [npmjs.com](https://www.npmjs.com/). Podemos encontra módulos de procesar ficheros, de crear strings aleatoriamente, de críptografia, de gráficos, etc. Inclusive podemos publicar nuestro propio módulo si creemos que puede ser interesante para la comunidad.
 
 ## 42.- Ejercicio: haciendo módulos (3:49)
+
+Dentro de nuetra carpeta `cursonode`:
+
+* Crear la carpeta `modulos`
+* Dentro de `modulos` crear el archivo `suma.js.`
+* Incluir el siguiente código:
+```js
+```
+
