@@ -298,5 +298,89 @@ No estamos manipulando el parámetro.
 Si no sabemos como se llama la librería o queremos más información vamos a la [Documentación de Node](https://nodejs.org/es/docs/) entramos al [API](https://nodejs.org/dist/latest-v12.x/docs/api/) y en las opciones que salen seleccionamos [Events](https://nodejs.org/dist/latest-v12.x/docs/api/events.html) y dentro tenemos [Class:EventEmitter](https://nodejs.org/dist/latest-v12.x/docs/api/events.html#events_class_eventemitter) y podemos observar toda la información sobre como usar `EventEmitter`.
 
 ## 41.- Módulos (7:29)
- 
+
+Los módulos nos permiten estructurar nuestras aplicaciones y hacerlas crecer sin complicarnos demasiado.
+
+Los módulos de Node.JS se basan en el estándar **CommonJS**.
+
+* Quien quiere usar un módulo lo carga con **`require`**.
+* La instrucción `require` es **síncrona**.
+* Opcionalmente, los módulos usan **`exports`** para exportar cosas.
+* Los módulos son singleton.
+
+Node carga un módulo una sola vez. En el primer require.
+
+**Los siguientes require al mismo módulo devolverán el mismo objeto que se exportó en la primera llamada**.
+
+Esto nos vendrá muy bien con las conexiones a bases de datos, por ejemplo. *Cuando metemos el código de conexión a la BD en un módulo lo requerimos una vez, se establece la conexión, y las siguientes veces que hagamos un requiere de esa conexión, no se volvera a realizar una nueva conexión sino que reutilizaremos la conexión anterior*.
+
+Ejemplo de un módulo básico:
+
+```js
+
+// modulo.js
+console.log('Hola desde un módulo!');
+
+// index.js
+require('./module.js');
+```
+Con esto cargamos y ejecutamos el contenido del modulo `modulo.js` desde `index.js`.
+
+Ejemplo que exporta algo:
+```js
+// suma.js
+module.exports = function(a, b) {
+   return a +b;
+}
+
+// index.js
+var suma = require('./suma)';
+```
+En el archivo `suma.js` estamos creando un `module.exports` que tiene asociada una función anonima.
+En el archivo `index.js` declaramos la variable `var suma = require('./suma)';`  con lo que el contenido de `suma` será igaul a la función anónima declarada en el módulo.
+
+
+### Donde busca Node.js los módulos.
+
+Los módulos son buscados en el siguiente orden hasta que lo encuentre.
+
+1. Si empieza por `./` o `/` o `../` (algo que esta en el File System) va a la ruta calculada desde la situación del fichero actual.
+2. Si es un módulo del core como `fs`, `events` o `path`
+3. Módulos en la carpeta **node_modules** local
+4. Módulos en la carpeta **node_modules** global
+
+En nuestro código podemos llegar a tener situaciones como:
+
+`require('../../../../../lib/files/modulo.js'`  (Ruta relativa)
+
+**¿Cómo evitar esto? Asignando **NODE_PATH** a la ruta donde metemos nuestra librería en el arranque de nuestra app.
+
+**NODE_PATH=lib** node index.js
+
+`require("files/modulo.js"); // mejor así!`
+
+Otra forma de hacer algo parecido es si usamos **npm** a partir de 2.0 podemos anotarlas en el `package.json`:
+```js
+{
+   "name": "baz",
+   "dependencies": {
+      "bar": "file:../foo/bar"
+   }
+}
+```
+
+[Más info](https://docs.npmjs.com/files/package.json#local-paths)
+
+### ¿module.exports o exports?
+
+* `exports` es un alias de `module.exports`.
+* Node lo crea automáticamente
+* Para exportar objetos se pueden usar los dos indistintamente
+
+Si asignamos algo directamente a `exports` deja de ser un alias. Solo podemos usarlo con **`exports.loquesea`**
+
+### npmjs.com
+
+Principalmente podemos encontrar módulos de terceros en [npmjs.com](https://www.npmjs.com/). Podemos encontra módulos de procesar ficheros, de crear strings aleatoriamente, de críptografia, de gráficos, etc. Inclusive podemos publicar nuestro propio módulo si creemos que puede ser interesante para la comunidad.
+
 ## 42.- Ejercicio: haciendo módulos (3:49)
