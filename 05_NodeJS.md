@@ -161,7 +161,6 @@ Es como decir a Node "Cuando vuelvas a comprobar los callbacks finalizados haz e
 
 ### Non blocking
 
-
 Si Node se quedara esperando hasta que termine una query o una petición a Facebook, acumularía demasiados eventos pendientes y dejaría de atender a las siguientes peticiones, ya que como dijimos **usa un solo hilo**.
 
 *Por lo tanto nuestro código debería estar estructurado de tal manera que no bloque o bloque lo menos posible ese hilo, por tanto si tenemos que hacer trabajos pesados no los hagamos todos seguidos o a la vez por que dejariamos de atender otras peticiones. 
@@ -202,6 +201,102 @@ var suenaTelefono = funtion(quien){
 
 ## 40.- Ejercicio: EventEmitter (6:31)
  
+Dentro de nuetra carpeta `cursonode`:
+
+* Crear el archivo `eventemitter.js.`
+* Incluir el siguiente código:
+```js
+"use strict";
+
+var events = require('events');
+var myEmitter = new events.EventEmitter();
+
+myEmitter.on('llamar telefono', sonarTelefono);
+myEmitter.on('llamar telefono', vibrarTelefono);
+
+function sonarTelefono() {
+    console.log('Ring Ring Ring');
+}
+
+function vibrarTelefono() {
+    console.log('Brrrr Brrrr Brrr');
+}
+
+myEmitter.emit('llamar telefono');
+```
+La salida es:
+
+<img src="/images/emitter01.png">
+
+Explicando el código:
+
+`var events = require('events');` Requerimos la librería 'events'.
+`var myEmitter = new events.EventEmitter();` Creamos un emisor de eventos llamado `myEmitter`
+`myEmitter.on('llamar telefono', sonarTelefono);` Al identificador `llamar telefono` le colgamos la función `sonarTelefono`
+`myEmitter.on('llamar telefono', vibrarTelefono);` A `llamar telefono` le colgamos una segúnda función `vibrarTelefono`
+Definimos las dos funciones:
+```js
+function sonarTelefono() {
+    console.log('Ring Ring Ring');
+}
+
+function vibrarTelefono() {
+    console.log('Brrrr Brrrr Brrr');
+}
+```
+`myEmitter.emit('llamar telefono');` Emitimos el evento `llamar telefono` lo que implicara que se ejecuten las funciones (callbacks) asociadas el evento, es decir `sonarTelefono` y  `vibrarTelefono` como vemos en la salida.
+
+Añadiendo un parametro:
+```js
+"use strict";
+
+var events = require('events');
+var myEmitter = new events.EventEmitter();
+
+myEmitter.on('llamar telefono', sonarTelefono);
+myEmitter.on('llamar telefono', vibrarTelefono);
+
+function sonarTelefono(quien) {
+    if (quien == 'Madre')
+        console.log('Tilin Tilin Tilin');
+    else
+        console.log('Ring Ring Ring');
+}
+
+function vibrarTelefono() {
+    console.log('Brrrr Brrrr Brrr');
+}
+
+myEmitter.emit('llamar telefono', 'Madre');
+myEmitter.emit('llamar telefono', 'Novia');
+```
+La salida es:
+
+<img src="/images/emitter02.png">
+
+Explicación del código:
+
+`myEmitter.emit('llamar telefono', 'Madre');` Al emitir el evento `llamar telefono` añadimos el parámetro `Madre` el cual es recibido por las funciones asociadas, en este caso:
+```js
+function sonarTelefono(quien) {
+    if (quien == 'Madre')
+        console.log('Tilin Tilin Tilin');
+    else
+        console.log('Ring Ring Ring');
+}
+```
+Lo que permite cambiar el tono cuando nos llame nuestra Madre y en cualquier otro caso dejar el  tono por default. La vibración será igual para todos los casos ya que en:
+```js
+function vibrarTelefono() {
+    console.log('Brrrr Brrrr Brrr');
+}
+```
+No estamos manipulando el parámetro.
+
+### Buscar en la Documentación Oficial de Node
+
+Si no sabemos como se llama la librería o queremos más información vamos a la [Documentación de Node](https://nodejs.org/es/docs/) entramos al [API](https://nodejs.org/dist/latest-v12.x/docs/api/) y en las opciones que salen seleccionamos [Events](https://nodejs.org/dist/latest-v12.x/docs/api/events.html) y dentro tenemos [Class:EventEmitter](https://nodejs.org/dist/latest-v12.x/docs/api/events.html#events_class_eventemitter) y podemos observar toda la información sobre como usar `EventEmitter`.
+
 ## 41.- Módulos (7:29)
  
 ## 42.- Ejercicio: haciendo módulos (3:49)
