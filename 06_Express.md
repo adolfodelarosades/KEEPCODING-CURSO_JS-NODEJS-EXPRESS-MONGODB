@@ -221,14 +221,19 @@ Dentro de la carpeta `cursonode`:
 * Crear la carpeta `express_generator`
 * Entrar a la carpeta `cd express_generator`
 * Crear la aplicación `express generada`
+
 <img src="/images/express-generada.png">
 <img src="/images/express-generada-files.png">
+
 * Cambiamos de directorio `cd generada`
 * Instalamos dependencias `npm install`
+
 <img src="/images/npm-install-generada.png">
 <img src="/images/npm-install-generada-files.png">
+
 * Lanzar la aplicación `npm start`
 * Cargar en el navegador la URL `localhost:3000`
+
 <img src="/images/express-navegador-02.png">
  
 ### Express Generator
@@ -265,17 +270,18 @@ Dentro de la carpeta `cursonode`:
 * Crear la carpeta `express_generator_ejs`
 * Entrar a la carpeta `cd express_generator_ejs`
 * Crear la aplicación `express generada --ejs`
+
 <img src="/images/express-generada-ejs.png">
 <img src="/images/express-generada-ejs-files.png">
+
 * Cambiamos de carpeta `cd generada`
 * Instalamos dependencias `npm install`
 * Lanzar la aplicación `npm start`
 * Cargar en el navegador la URL `localhost:3000`
+
 <img src="/images/express-navegador-02.png">
 <img src="/images/express-navegador-03.png">
  
-
-
 Si abrimos el archivo `package.json` vemos:
 ```js
 {
