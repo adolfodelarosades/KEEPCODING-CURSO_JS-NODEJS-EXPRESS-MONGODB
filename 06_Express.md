@@ -258,6 +258,160 @@ Si queremos podríamos incluir esto en el comando `start` de `npm`, especificán
  
 ## 47.- Estructura y Rutas (9:34)
 
+Las aplicaciones se pueden crear con un conjunto de plantillas, uno de los más sencillos es `ejs`. Para utilizar este motor de plantillas tenemos que decirselo a Express Generator, generame una aplicación con ese motor de plantillas.
+
+Dentro de la carpeta `cursonode`:
+
+* Crear la carpeta `express_generator_ejs`
+* Entrar a la carpeta `cd express_generator_ejs`
+* Crear la aplicación `express generada --ejs`
+<img src="/images/express-generada-ejs.png">
+<img src="/images/express-generada-ejs-files.png">
+* Cambiamos de carpeta `cd generada`
+* Instalamos dependencias `npm install`
+* Lanzar la aplicación `npm start`
+* Cargar en el navegador la URL `localhost:3000`
+<img src="/images/express-navegador-02.png">
+<img src="/images/express-navegador-03.png">
+ 
+
+
+Si abrimos el archivo `package.json` vemos:
+```js
+{
+  "name": "generada",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1"
+  }
+}
+```
+Vemos que tenemos:
+```js
+"scripts": {
+    "start": "node ./bin/www"
+  },
+```
+Ejecuta un script llamado `start` con la instrucción `node ./bin/www`. Si vamos a la carpeta `./bin` tenemos el archivo `www` (Lanzador de nuestra aplicación) y si lo abrimos vemos todo su código:
+```js
+var app = require('../app');
+var debug = require('debug')('generada:server');
+var http = require('http');
+...
+```
+Vemos que requiere el archivo `app.js` que es uno de los archivos de nuestra aplicación, donde tenemos la parte principal  de la aplicación:
+```js
+var createError = require('http-errors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+
+var app = express();
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+module.exports = app;
+```
+Aquí:
+* Requerimos express
+* Configuramos express
+* Añadimos los componentes que queremos usar como las `views`
+* Que va a usar el motor de vistas `ejs`
+* Como hacer logs
+* Como parsear el body
+* Indica algunas rutas que puede servir `/` y `users`
+* Tiene un manejador 404
+* Manejador de errores de desarrollo y producción
+
+Podriamos abrir los Routes que requiere:
+`index.js`:
+```js
+var express = require('express');
+var router = express.Router();
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Express' });
+});
+
+module.exports = router;
+```
+`users.js`:
+```js
+var express = require('express');
+var router = express.Router();
+
+/* GET users listing. */
+router.get('/', function(req, res, next) {
+  res.send('respond with a resource');
+});
+
+module.exports = router;
+
+```
+En `index.js` :
+* Requerimos express
+* Creamos un router
+* Creamos método `get` y asociamos la ruta
+* Cuando hagamos la petición a `/` renderizara una vista llamada `index` con el título `Express` y en `users.js` simplemente envia el mensaje `respond with a resource`.
+
+Si vamos a la carpeta `views` veremos las diferentes vistas que tenemos entre ellas una que se llame `index.ejs`:
+```js
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+  </body>
+</html>
+```
+
+**Todo esto que hemos visto a vista de pajaro, forma la estructura que se crea en una aplicación Express.**
+
 ### Rutas
 
 Express define las rutas para tengan la siguiente estructura:
