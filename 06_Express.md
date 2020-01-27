@@ -370,7 +370,9 @@ Aquí:
 * Manejador de errores de desarrollo y producción
 
 Podriamos abrir los Routes que requiere:
+
 `index.js`:
+
 ```js
 var express = require('express');
 var router = express.Router();
@@ -382,7 +384,9 @@ router.get('/', function(req, res, next) {
 
 module.exports = router;
 ```
+
 `users.js`:
+
 ```js
 var express = require('express');
 var router = express.Router();
@@ -421,54 +425,100 @@ Si vamos a la carpeta `views` veremos las diferentes vistas que tenemos entre el
 ### Rutas
 
 Express define las rutas para tengan la siguiente estructura:
-app.METHOD(PATH, HANDLER)
+
+`app.METHOD(PATH, HANDLER)`
+
 donde:
-app es la instancia de express
-METHOD es el método de la petición HTTP (GET, POST, ...) PATH es la ruta de la petición
-HANDLER es la función que se ejecuta si la ruta coincide.
+* app es la instancia de express
+* METHOD es el método de la petición HTTP (GET, POST, ...) 
+* PATH es la ruta de la petición
+* HANDLER es la función que se ejecuta si la ruta coincide.
  
 ### Rutas
+
 HTTP pone a nuestra disposición varios métodos, de los cuales generalmente hacemos distintos usos:
-GET para pedir datos, es idempotente (p.e. listas)
-POST para crear un recurso (p.e. crear un usuario)
-PUT para actualizar, es idempotente (p.e. guardar un usuario existente) DELETE eliminar un recurso, es idempotente (p.e. eliminar un usuario)
-* idempotente: si lo ejecutas varias veces los resultados no cambian
+
+* **GET** para pedir datos, es idempotente (p.e. listas)
+* **POST** para crear un recurso (p.e. crear un usuario)
+* **PUT** para actualizar, es idempotente (p.e. guardar un usuario existente) 
+* **DELETE** eliminar un recurso, es idempotente (p.e. eliminar un usuario)
+
+**idempotente**: si lo ejecutas varias veces los resultados o el resultado del servidor no cambian.
 
 ### Rutas
+
 Por lo tanto podríamos construir rutas como estas:
-app.get('/', function (req, res) { res.send('Hello World!');
+```js
+app.get('/', function (req, res) { 
+  res.send('Hello World!');
 });
-app.post('/', function (req, res) { res.send('Guardado!');
+
+app.post('/', function (req, res) { 
+  res.send('Guardado!');
 });
+```
 
 ### Orden de las rutas
+
 El orden es importante!
+
 En el orden que carguemos nuestras rutas a express es el orden en que las interpretará.
-Si ponemos los estáticos después de nuestras rutas podremos 'sobre-escribir' un fichero estático con una ruta, por ejemplo para comprobar si el usuario tiene permisos para descargarlo.
+
+Si ponemos los estáticos después de nuestras rutas podremos *'sobre-escribir'* un fichero estático con una ruta, por ejemplo para comprobar si el usuario tiene permisos para descargarlo.
 
 ### Rutas
-Express nos permite también usar all como comodín.
-app.all('/admin', function (req, res) { console.log('Accediendo a sección admin ...'); res.send('Admin zone');
+
+Express nos permite también usar `all` como comodín.
+
+```js
+app.all('/admin', function (req, res) { 
+  console.log('Accediendo a sección admin ...'); 
+  res.send('Admin zone');
 });
+```
+
+Cualquier petición `get`, `post`, `put`, `delete` a `/admin` queremos hacer un tipo de acción no necesitamos definirlos todos vale con poner solo el `.all`.
+
 
 ### Rutas
+
+Un uso tipico podría ser verificar unas credenciales, cualquier llamada a `/admin` verifica las credenciales y después la función `next`, que es un tercer parámetro y esta función cuando la llamemos significara que no hemos respondido sino que queremos que express pase la ejecución al siguiente handler que se haya definido para esa ruta y que ya respondera otro más adelante. 
+
+Normalmente en las rutas de express podemos hacer dos cosas, en estos handlers o middleware podemos hacer dos cosas:
+
+* Responder (caso anterior)
+* Pasar el control al siguiente middleware (este caso)
+
+```js
 app.all('/admin', function (req, res, next) { //verificar credenciales
-next(); // pasa el control al siguiente handler
+  next(); // pasa el control al siguiente handler
 });
-next pasa la ejecución al siguiente handler definido para esa ruta.
+```
+*next* pasa la ejecución al siguiente handler definido para esa ruta.
 
 ## 48.- Estáticos (1:18)
 
 ### Servir ficheros estáticos
-Servir estáticos como CSS, imágenes, ficheros javascript, etc, se especifica con un middleware llamado express.static
-app.use( express.static( path.join(__dirname, 'public') ) );
-Con esto serviremos lo que haya en la carpeta public como estáticos de la raíz de la ruta.
+
+Para servir ficheros estáticos como CSS, imágenes, ficheros javascript, etc, express generator nos ha creado una aplicación que ya tiene una entrada para esto, se especifica con un middleware llamado `express.static`:
+
+```js
+app.use(express.static(path.join(__dirname, 'public')));
+```
+*Le estamos diciendo que todo lo que haya en nuestra carpeta `public` de nuestro file system se va a servir en la raíz de nuestro site.*
+
+Con esto serviremos lo que haya en la carpeta `public` como estáticos de la raíz de la ruta.
 
 ### Servir ficheros estáticos
-Si queremos añadir otras carpetas de estáticos tenemos que especificar en que rutas colgarlos.
+
+Si queremos añadir otras carpetas de estáticos tenemos que especificar en que rutas colgarlos, podemos poner varias líneas.
+
+```js
 // la ruta virtual '/otros' servirá la carpeta '/otros'
 app.use('/otros', express.static(path.join(__dirname, 'otros')));
+app.use('/pdf', express.static(path.join(__dirname, 'pdf')));
 
+```
 
 ## 49.- Recibiendo parámetros (5:23)
 
