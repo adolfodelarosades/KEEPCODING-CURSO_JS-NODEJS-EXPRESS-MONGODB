@@ -187,23 +187,319 @@ Cuando arrancamos el servidor simplemente pinta el mensaje `*** App de ejemplo a
 <img src="/images/express06.png">
 
 ## 46.- Express generator (6:42)
+
+### Usando Express Generator
+Express Generator nos crea una estructura base para una aplicación.
+$ [sudo] npm install express-generator -g $ express -h
+$ express <nombreApp> [--ejs]
+$ cd <nombreApp>
+$ npm install
+ 
+ ### Express Generator
+Podemos establecer variables de entorno para variar la forma de arranque:
+$ npm start // desarrollo, puerto por defecto (3000) $ NODE_ENV=production npm start // producción
+$ DEBUG=nombreApp:* PORT=3001 NODE_ENV=production npm start // con log debug activado, puerto 3001, entorno producción
+
+### Express Generator
+Si queremos podríamos incluir esto en el comando start de npm, especificándolo en el package.json
+...
+"scripts": {
+"start": "DEBUG=nombreApp:* PORT=3002 nodemon ./bin/www"
+}, ...
+
+
  
 ## 47.- Estructura y Rutas (9:34)
+
+### Rutas
+
+Express define las rutas para tengan la siguiente estructura:
+app.METHOD(PATH, HANDLER)
+donde:
+app es la instancia de express
+METHOD es el método de la petición HTTP (GET, POST, ...) PATH es la ruta de la petición
+HANDLER es la función que se ejecuta si la ruta coincide.
  
+### Rutas
+HTTP pone a nuestra disposición varios métodos, de los cuales generalmente hacemos distintos usos:
+GET para pedir datos, es idempotente (p.e. listas)
+POST para crear un recurso (p.e. crear un usuario)
+PUT para actualizar, es idempotente (p.e. guardar un usuario existente) DELETE eliminar un recurso, es idempotente (p.e. eliminar un usuario)
+* idempotente: si lo ejecutas varias veces los resultados no cambian
+
+### Rutas
+Por lo tanto podríamos construir rutas como estas:
+app.get('/', function (req, res) { res.send('Hello World!');
+});
+app.post('/', function (req, res) { res.send('Guardado!');
+});
+
+### Orden de las rutas
+El orden es importante!
+En el orden que carguemos nuestras rutas a express es el orden en que las interpretará.
+Si ponemos los estáticos después de nuestras rutas podremos 'sobre-escribir' un fichero estático con una ruta, por ejemplo para comprobar si el usuario tiene permisos para descargarlo.
+
+### Rutas
+Express nos permite también usar all como comodín.
+app.all('/admin', function (req, res) { console.log('Accediendo a sección admin ...'); res.send('Admin zone');
+});
+
+### Rutas
+app.all('/admin', function (req, res, next) { //verificar credenciales
+next(); // pasa el control al siguiente handler
+});
+next pasa la ejecución al siguiente handler definido para esa ruta.
+
 ## 48.- Estáticos (1:18)
- 
+
+### Servir ficheros estáticos
+Servir estáticos como CSS, imágenes, ficheros javascript, etc, se especifica con un middleware llamado express.static
+app.use( express.static( path.join(__dirname, 'public') ) );
+Con esto serviremos lo que haya en la carpeta public como estáticos de la raíz de la ruta.
+
+### Servir ficheros estáticos
+Si queremos añadir otras carpetas de estáticos tenemos que especificar en que rutas colgarlos.
+// la ruta virtual '/otros' servirá la carpeta '/otros'
+app.use('/otros', express.static(path.join(__dirname, 'otros')));
+
+
 ## 49.- Recibiendo parámetros (5:23)
+
+### Recibiendo parámetros
+Habitualmente recibiremos parámetros en nuestros controladores de varias formas:
+En la ruta (/users/5)
+Con parámetros en query string (/users?sort=name)
+En el cuerpo de la petición (POST y PUT generalmente)
+También podemos recibirlos en la cabecera, pero esta zona solemos dejarla para información de contexto, como autenticación, formatos, etc.
+
+### Recibiendo parámetros - en la ruta
+Lo definimos en el argumento PATH de la ruta
+router.put('/ruta/:id', function(req, res) { console.log('params', req.params);
+var id = req.params.id;
+});
+PUT http://localhost:3000/apiv1/anuncios/55
+Podemos combinarlo con los otros
+
+### Recibiendo parámetros - en query string
+Lo definimos en la query string
+router.put('/ruta', function(req, res) { console.log('query-string', req.query); var id = req.query.id;
+});
+PUT http://localhost:3000/apiv1/anuncios?id=66
+Podemos combinarlo con los otros
+
+### Recibiendo parámetros - en el body
+Los recibimos en req.body. Esta forma no la podemos usar en GET ya que no usa body.
+router.put('/ruta', function(req, res) { console.log('body', req.body); // body var nombre = req.body.nombre;
+});
+PUT http://localhost:3000/apiv1/anuncios {nombre: 'Pepe'}
+
+### Recibiendo parámetros
+En el paso por ruta podemos usar expresiones regulares en los parámetros, incluir varios o hacerlos opcionales.
+router.put('/ruta/:id?', function...); // parámetro opcional // params { id: 'dato'}
+router.put('/ruta/:id([0-9]+)', function...); // parámetro con regexp // params { id: '26'}
+router.put('/ruta/:id([0-9]+)/piso/:piso(A|B|C)', function...); // varios // params { id: '26', piso: 'A' }
  
 ## 50.- Respondiendo a peticiones (5:35)
- 
+
+### Métodos de respuesta
+res.download() res.end()
+res.json() res.jsonp() res.redirect() res.render() res.send() res.sendFile res.sendStatus()
+as the response body.
+Prompt a file to be downloaded.
+End the response process.
+Send a JSON response.
+Send a JSON response with JSONP support. Redirect a request.
+Render a view template.
+Send a response of various types.
+Send a file as an octet stream.
+Set the response status code and send its string representation
+Podemos ver su documentación. Veamos los más usados...
+
+### Métodos de respuesta - send
+Para responder a una petición podemos usar el método genérico res.send(). El cuerpo de la respuesta puede ser un buffer, un string, un objeto o un array.
+res.send(new Buffer('whoop'));
+res.send({ some: 'json' });
+res.send('<p>some html</p>'); res.status(404).send('Sorry, we cannot find that!'); res.status(500).send({ error: 'something blew up' });
+Express detecta el tipo de contenido y pone el header Content-Type adecuado. Si es un array o un objeto devuelve su representación en JSON
+
+
+### Métodos de respuesta - json
+Podemos usar res.json, que ajusta un posible null o undefined para que salga bien en JSON
+res.json(null)
+res.json({ user: 'tobi' }) res.status(500).json({ error: 'message' })
+
+### Métodos de respuesta - download
+Transfiere el fichero especificado como un attachment. El browser debe solicitar al usuario que guarde el fichero.
+// el nombre del fichero es opcional
+res.download('/report-12345.pdf', 'report.pdf');
+
+### Métodos de respuesta - redirect
+Devuelve una redirección con el status code 302 por defecto (found).
+res.redirect('/foo/bar'); // relativa al root host name res.redirect('http://example.com'); // absoluta res.redirect(301, 'http://example.com'); // con status res.redirect('../login'); // relativa al path actual res.redirect('back'); // vuelve al referer
+
+### Métodos de respuesta - render
+Renderiza una vista y envia el HTML resultante. Acepta un parámetro opcional 'locals' para dar variables locales a la vista.
+// render de la vista index
+res.render('index');
+// render de la vista user con el objeto locals
+res.render('user', { name: 'Tobi' });
+
+### Métodos de respuesta - sendFile
+Envía un fichero como si fuera un estático.
+Además de la ruta del fichero acepta un objeto de opciones y un callback para comprobar el resultado de la transmisión.
+var options = { headers: {
+'x-timestamp': Date.now(),
+'x-sent': true }
+};
+res.sendFile(fileName, options);
+
+
 ## 51.- Ejercicio: rutas parámetros y respuestas (11:16)
  
 ## 52.- Middlewares (7:57)
- 
+
+### Middlewares
+Un Middleware es un handler que se activa ante unas determinadas peticiones o todas, antes de realizar la acción principal de una ruta.
+Podemos poner tantos middlewares como nos hagan falta.
+Una aplicación Express es esencialmente una serie de llamadas a middlewares.
+
+### Middlewares
+Tiene acceso al objeto de la petición (request), al objeto de la respuesta (response) y al siguiente middleware (next).
+router.get('/', function(req, res, next) { }
+Si un middleware no quiere terminar una llamada debe llamar
+al siguiente next() para pasarle el control, de lo contrario la
+petición quedará sin respuesta, y el que la hizo (por ejemplo un browser) se quedará esperando hasta su tiempo límite de time-out.
+
+### Middlewares - tipos
+Comúnmente establecemos middlewares de los siguientes tipos:
+Application-level —> todas las peticiones
+Router-level —> las peticiones a un router determinado Error-handling —> controlan posibles errores de forma global Built-in —> añaden funcionalidad estándar
+Third-party —> añaden funcionalidad de terceros
+
+### Middlewares - app
+Se conecta al objeto instancia de la aplicación (app) con app.use o app.METHOD, por ejemplo:
+var app = express();
+app.use(function (req, res, next) { console.log('Time:', Date.now()); next();
+});
+
+### Middlewares - router
+Se conecta a un router con router.use o router.METHOD, por ejemplo:
+var router = express.Router();
+router.use(function (req, res, next) { userModel.find(req.body.userId, function (user) {
+req.user = user; next();
+}); });
+
+### Middlewares - error
+Los pondremos los últimos, tras todas nuestras rutas. Reciben un parámetro más err.
+app.use(function(err, req, res, next) { console.error(err.stack); res.status(500).send('Something broke!');
+});
+// en una ruta anterior podemos haber hecho next(err);
+Podemos devolver lo que nos convenga, un JSON con un error, una página de error, un texto, etc.
+
+### Middlewares - built-in
+Son middlewares estándar que proveen los mantenedores de Express. Por ejemplo, express.static:
+app.use(express.static('public', options)); Se puede revisar una lista en su página de github.
+
+### Middlewares - de terceros
+Podemos instalarlos con npm y cargarlos como los anteriores.
+$ npm install cookie-parser
+var cookieParser = require('cookie-parser');
+// load the cookie parsing middleware
+app.use(cookieParser());
+Hay una lista de los más usados en http://expressjs.com/resources/ middleware.html
+
+
 ## 53.- Ejercicio: un middleware sencillo (7:24)
  
 ## 54.- Ejercicio: doble respuesta (3:27)
  
 ## 55.- Vistas Templates (11:09)
+
+### Templates
+Además de servir html estático podemos usar sistemas de plantillas.
+Express por defecto monta Jade, podemos cambiarlo fácilmente, por ejemplo a EJS que es uno de los más usados.
+
+### Templates
+Hay muchos sistemas de templates en Javascript, pero los que cumplen con el estándar de Express están listados en:
+https://www.npmjs.com/package/consolidate#supported-template- engines
+
+### Templates
+Para instalar un sistema de templates lo instalaremos con npm install ejs —save y nos aseguramos de que nuestra aplicación lo usa con un par de settings:
+views, el directorio donde estarán nuestras plantillas, por ejemplo: app.set('views', './views')
+view engine, el template engine a usar, por ejemplo: app.set('view engine', 'jade')
+Express lo carga automáticamente y ya podremos usarlo.
+
+### Templates - Jade
+app.set('view engine', 'jade');
+doctype html
+html
+head
+title= title
+link(rel='stylesheet', href='/stylesheets/style.css')
+body
+  p esto es un párrafo
+  
+### Templates - Jade
+<!DOCTYPE html>
+<html>
+<head>
+<title>Express</title>
+<link rel="stylesheet" href="/stylesheets/style.css">
+  </head>
+  <body>
+    <p>esto es un párrafo</p>
+  </body>
+</html>
+
+### Templates - EJS
+EJS añade su funcionalidad sobre HTML estándar.
+Esto puede hacer que nos sea más fácil depurar errores o integrar y mantener una maquetación realizada por un maquetador especializado.
+
+### Templates
+Para proporcionar datos variables a las vistas le damos un objeto en la llamada render:
+res.render('index', { titulo: 'Anuncios' });
+En la vista tendremos disponible el contenido de ese objeto.
+<title><%= titulo %></title>
  
+ ### Templates
+Para reemplazar datos usaremos esta notación:
+<title><%= titulo %></title>
+ 
+ ### Templates - sin escapar
+El valor será escapado para evitar la inyección de código. Si queremos incluir html usaríamos <%- %>
+<p><%- sinEscapar %></p>
+ 
+ ### Templates - include
+Podemos incluir el contenido de otras plantillas.
+<% include otra/plantilla %>
+views
+- index.js - otra
+- plantilla.ejs
+
+### Templates - condiciones
+Usar bloques de forma condicional es sencillo.
+<% if (condicion.estado) { %>
+<p><%= condicion.segundo %> es par</p>
+<% } else { %>
+<p><%= condicion.segundo %> es impar</p>
+<% } %>
+ 
+ ### Templates - iterar
+O por ejemplo iterar bucles.
+<% users.forEach(function(user){ %> <p><%= user.name %></p>
+<% }) %>
+ 
+ ### Templates - código
+En resumen, entre los tags <% y %> (sin usar '=' o '-') podemos colocar cualquier estructura de código válida en Javascript.
+Pero sin pasarnos. Esto es una vista, y meter código aquí significa que tenemos funcionalidad en las vistas.
+Es recomendable tener toda o la mayor parte de la funcionalidad en los modelos y en los controladores.
+
+### Templates
+Podemos encontrar su documentación y más ejemplos en: https://github.com/mde/ejs
+
+
 ## 56.- Ejercicio: vistas (9:19)
+
+### Ejercicio - Listar módulos
+Representar los resultados de la función versionModulos hecha previamente en una página, con los módulos de Express.
+Los módulos cuya versión sea menor a 1.0 deberán salir en rojo. En que orden salen?
