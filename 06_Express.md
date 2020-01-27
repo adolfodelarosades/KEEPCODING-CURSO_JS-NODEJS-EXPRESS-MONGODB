@@ -188,26 +188,73 @@ Cuando arrancamos el servidor simplemente pinta el mensaje `*** App de ejemplo a
 
 ## 46.- Express generator (6:42)
 
+Express generator es una utilidad que va a generarnos una aplicación de Express con algunos componentes más y podemos usarla como punto de partida para iniciar una nueva aplicación.
+
 ### Usando Express Generator
-Express Generator nos crea una estructura base para una aplicación.
-$ [sudo] npm install express-generator -g $ express -h
-$ express <nombreApp> [--ejs]
-$ cd <nombreApp>
-$ npm install
+
+Express Generator nos crea una estructura **base** para una aplicación.
+
+
+
+`$ [sudo] npm install express-generator -g` Instalarla de manera global.
+
+`$ express -h` Ver la lista de opciones que nos proporciona.
+
+`$ express <nombreApp> [--ejs]` Crear una aplicacón básica de Express con cierto esqueleto.
+
+`$ cd <nombreApp>` Cambiarnos a la carpeta del proyecto.
+
+`$ npm install` Instalar las dependecias del proyecto.
+
+Vamos a generar una aplicación con Express Generator. Lo primero que vamos a hacer instalar Espress Generator:
+
+`$ [sudo] npm install express-generator -g`
+
+Una vez instalado pulsamos:
+
+`$ express -h`
+
+<img src="/images/express-generator-install.png">
+
+Dentro de la carpeta `cursonode`:
+
+* Crear la carpeta `express_generator`
+* Entrar a la carpeta `cd express_generator`
+* Crear la aplicación `express generada`
+<img src="/images/express-generada.png">
+<img src="/images/express-generada-files.png">
+* Cambiamos de directorio `cd generada`
+* Instalamos dependencias `npm install`
+<img src="/images/npm-install-generada.png">
+<img src="/images/npm-install-generada-files.png">
+* Lanzar la aplicación `npm start`
+* Cargar en el navegador la URL `localhost:3000`
+<img src="/images/express-navegador-02.png">
  
- ### Express Generator
+### Express Generator
+
 Podemos establecer variables de entorno para variar la forma de arranque:
-$ npm start // desarrollo, puerto por defecto (3000) $ NODE_ENV=production npm start // producción
-$ DEBUG=nombreApp:* PORT=3001 NODE_ENV=production npm start // con log debug activado, puerto 3001, entorno producción
+
+`$ npm start` Arrancar en desarrollo, puerto por defecto (3000) 
+
+`$ NODE_ENV=production npm start` Arrancar en producción
+
+*Las diferencias de lanzar en Desarrollo o Producción son los Logs que lanza la aplicación y la cantidad de información que proporciona cuando ocurre aqlgún error. Producción proporciona menos información para no develar posibles interioridades de nuestra aplicación.*
+
+`$ DEBUG=nombreApp:* PORT=3001 NODE_ENV=production npm start` Arrancar con log debug activado, puerto 3001, entorno producción.
+
+*Podemos personalizar el puerto, el * hace log de todos los modulos o podemos poner uno concretamente*
 
 ### Express Generator
-Si queremos podríamos incluir esto en el comando start de npm, especificándolo en el package.json
+
+Si queremos podríamos incluir esto en el comando `start` de `npm`, especificándolo en el `package.json`
+```js
 ...
-"scripts": {
-"start": "DEBUG=nombreApp:* PORT=3002 nodemon ./bin/www"
+   "scripts": {
+      "start": "DEBUG=nombreApp:* PORT=3002 nodemon ./bin/www"
 }, ...
-
-
+```
+*Esta opción de arranque podemos incluirla en el archivo `package.json` que acepta varios scripts, damos un nombre y proporcionamos las distintas opciones de personalización de como queremos arrancar nuestra aplicación*
  
 ## 47.- Estructura y Rutas (9:34)
 
