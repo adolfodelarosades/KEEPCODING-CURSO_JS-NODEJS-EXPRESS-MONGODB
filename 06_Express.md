@@ -602,6 +602,7 @@ Repasemos ahora las disintas formas de responder a las peticiones con los difere
 ### Métodos de respuesta
 
 Método | Descripción
+-------|------------
 `res.download()` |  Prompt a file to be downloaded.
 `res.end()` | End the response process.
 `res.json()` | Send a JSON response.
