@@ -194,8 +194,6 @@ Express generator es una utilidad que va a generarnos una aplicación de Express
 
 Express Generator nos crea una estructura **base** para una aplicación.
 
-
-
 `$ [sudo] npm install express-generator -g` Instalarla de manera global.
 
 `$ express -h` Ver la lista de opciones que nos proporciona.
