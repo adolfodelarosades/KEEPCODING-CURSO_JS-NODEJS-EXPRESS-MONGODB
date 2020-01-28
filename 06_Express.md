@@ -509,105 +509,190 @@ Con esto serviremos lo que haya en la carpeta `public` como estáticos de la ra�
 
 ### Servir ficheros estáticos
 
-Si queremos añadir otras carpetas de estáticos tenemos que especificar en que rutas colgarlos, podemos poner varias líneas.
+Si queremos añadir otras carpetas de estáticos tenemos que especificar en que rutas colgarlos, podemos poner varias rutas.
 
 ```js
 // la ruta virtual '/otros' servirá la carpeta '/otros'
 app.use('/otros', express.static(path.join(__dirname, 'otros')));
 app.use('/pdf', express.static(path.join(__dirname, 'pdf')));
-
 ```
 
 ## 49.- Recibiendo parámetros (5:23)
 
+Veamos como recibir parámetros en nuestras rutas de express.
+
 ### Recibiendo parámetros
+
 Habitualmente recibiremos parámetros en nuestros controladores de varias formas:
-En la ruta (/users/5)
-Con parámetros en query string (/users?sort=name)
-En el cuerpo de la petición (POST y PUT generalmente)
-También podemos recibirlos en la cabecera, pero esta zona solemos dejarla para información de contexto, como autenticación, formatos, etc.
+
+* En la ruta (`/users/5`): El 5 es un parámetro que podría ser el `id` del usuario a buscar.
+* Con parámetros en query string (`/users?sort=name`)
+* En el cuerpo de la petición (POST y PUT generalmente) (GET y DELETE no tienen body)
+* También podemos recibirlos en la cabecera, pero esta zona solemos dejarla para información de contexto, como autenticación, formatos, etc.
 
 ### Recibiendo parámetros - en la ruta
+
 Lo definimos en el argumento PATH de la ruta
+
+```js
 router.put('/ruta/:id', function(req, res) { console.log('params', req.params);
-var id = req.params.id;
+  var id = req.params.id;
 });
-PUT http://localhost:3000/apiv1/anuncios/55
-Podemos combinarlo con los otros
+```
+La petición request `req` tiene una propiedad tipo objeto `params` que contiene todos los parámetros que se le pasen a la petición.
+
+Un ejemplo de llamada podría ser:
+
+**`PUT http://localhost:3000/apiv1/anuncios/55`**
+
+*Podemos combinarlo con los otros*
 
 ### Recibiendo parámetros - en query string
-Lo definimos en la query string
-router.put('/ruta', function(req, res) { console.log('query-string', req.query); var id = req.query.id;
-});
-PUT http://localhost:3000/apiv1/anuncios?id=66
-Podemos combinarlo con los otros
 
-### Recibiendo parámetros - en el body
-Los recibimos en req.body. Esta forma no la podemos usar en GET ya que no usa body.
-router.put('/ruta', function(req, res) { console.log('body', req.body); // body var nombre = req.body.nombre;
+Lo definimos en la query string
+
+```js
+router.put('/ruta', function(req, res) { 
+  console.log('query-string', req.query); var id = req.query.id;
 });
-PUT http://localhost:3000/apiv1/anuncios {nombre: 'Pepe'}
+```
+Aquí no hacemos nada especial en la definición de la ruta. La petición request `req` tiene una propiedad tipo objeto `query` que contiene todos los parámetros que se le pasen como query string a la petición. 
+
+Un ejemplo de llamada podría ser:
+
+**`PUT http://localhost:3000/apiv1/anuncios?id=66`**
+
+*Podemos combinarlo con los otros*
+
+### Recibiendo parámetros - en el body de la petición
+
+Los recibimos en `req.body`. Esta forma no la podemos usar en GET ya que no usa body.
+
+```js
+router.put('/ruta', function(req, res) { 
+  console.log('body', req.body); // body 
+  var nombre = req.body.nombre;
+});
+```
+Aquí tampoco hacemos nada especial en la definición de la ruta. La petición request `req` tiene una propiedad tipo objeto `body` que contiene todos los parámetros que se le pasen dentro del body a la petición. 
+
+Un ejemplo de llamada podría ser:
+
+**```PUT http://localhost:3000/apiv1/anuncios 
+{nombre: 'Pepe'}```**
 
 ### Recibiendo parámetros
-En el paso por ruta podemos usar expresiones regulares en los parámetros, incluir varios o hacerlos opcionales.
-router.put('/ruta/:id?', function...); // parámetro opcional // params { id: 'dato'}
-router.put('/ruta/:id([0-9]+)', function...); // parámetro con regexp // params { id: '26'}
-router.put('/ruta/:id([0-9]+)/piso/:piso(A|B|C)', function...); // varios // params { id: '26', piso: 'A' }
+
+En el paso por ruta podemos usar **expresiones regulares** en los parámetros, incluir varios o hacerlos opcionales.
+
+```js
+router.put('/ruta/:id?', function...); // ? indica que es un parámetro opcional, podemos o no mandarlo 
+// params { id: 'dato'}
+router.put('/ruta/:id([0-9]+)', function...); // parámetro con regexp que indica que solo se manden números 
+// params { id: '26'}
+router.put('/ruta/:id([0-9]+)/piso/:piso(A|B|C)', function...); // varios 
+// params { id: '26', piso: 'A' }
+```
+ El último ejemplo usa una expresión regular mñas compleja, que en caso de que el parámetro enviado coincida con ese patrón se ejecutara el midlware (función) definido.
  
 ## 50.- Respondiendo a peticiones (5:35)
 
+Repasemos ahora las disintas formas de responder a las peticiones con los diferentes métodos existentes.
+
 ### Métodos de respuesta
-res.download() res.end()
-res.json() res.jsonp() res.redirect() res.render() res.send() res.sendFile res.sendStatus()
-as the response body.
-Prompt a file to be downloaded.
-End the response process.
-Send a JSON response.
-Send a JSON response with JSONP support. Redirect a request.
-Render a view template.
-Send a response of various types.
-Send a file as an octet stream.
-Set the response status code and send its string representation
-Podemos ver su documentación. Veamos los más usados...
+
+Método | Descripción
+`res.download()` |  Prompt a file to be downloaded.
+`res.end()` | End the response process.
+`res.json()` | Send a JSON response.
+`res.jsonp()` | Send a JSON response with JSONP support.
+`res.redirect()` | Redirect a request. 
+`res.render()` | Render a view template.
+`res.send()` | Send a response of various types. 
+`res.sendFile` | Send a file as an octet stream. 
+`res.sendStatus()` | Set the response status code and send its string representation as the response body.
+
+Podemos ver su [documentación](https://expressjs.com/en/4x/api.html#res). Veamos los más usados...
 
 ### Métodos de respuesta - send
-Para responder a una petición podemos usar el método genérico res.send(). El cuerpo de la respuesta puede ser un buffer, un string, un objeto o un array.
+
+Para responder a una petición podemos usar el método genérico `res.send()`. 
+
+El cuerpo de la respuesta puede ser un buffer, un string, un objeto o un array.
+```js
 res.send(new Buffer('whoop'));
 res.send({ some: 'json' });
-res.send('<p>some html</p>'); res.status(404).send('Sorry, we cannot find that!'); res.status(500).send({ error: 'something blew up' });
-Express detecta el tipo de contenido y pone el header Content-Type adecuado. Si es un array o un objeto devuelve su representación en JSON
+res.send('<p>some html</p>'); 
+res.status(404).send('Sorry, we cannot find that!'); 
+res.status(500).send({ error: 'something blew up' });
+```
+El `res.status(codigo).send('mensaje')` nos permite envíar un código de respuesta asociado al mensaje que se mande.
 
+Express detecta el tipo de contenido y pone el **header Content-Type** adecuado. 
+
+Si es un array o un objeto devuelve su representación en JSON.
 
 ### Métodos de respuesta - json
-Podemos usar res.json, que ajusta un posible null o undefined para que salga bien en JSON
+
+Podemos usar `res.json`, que ajusta un posible `null` o `undefined` para que salga bien en JSON.
+```js
 res.json(null)
-res.json({ user: 'tobi' }) res.status(500).json({ error: 'message' })
+res.json({ user: 'tobi' }) 
+res.status(500).json({ error: 'message' })
+```
 
 ### Métodos de respuesta - download
+
 Transfiere el fichero especificado como un attachment. El browser debe solicitar al usuario que guarde el fichero.
+```js
 // el nombre del fichero es opcional
 res.download('/report-12345.pdf', 'report.pdf');
+```
+`res.download` Recibe la ruta donde se encuentra el fichero y un nombre obcional con el que se descargara el fichero.
+
+*Tipoco método que en el navegador va a abrir la ventana de guardar como para guardar ese fichero a descargar*.
 
 ### Métodos de respuesta - redirect
-Devuelve una redirección con el status code 302 por defecto (found).
-res.redirect('/foo/bar'); // relativa al root host name res.redirect('http://example.com'); // absoluta res.redirect(301, 'http://example.com'); // con status res.redirect('../login'); // relativa al path actual res.redirect('back'); // vuelve al referer
+
+Podemos redireccionar al usuario ante una petición a otro sitio. 
+Devuelve una redirección con el status code 302 por defecto (found). A menos que indiquemos otro como en el ejemplo.
+```js
+res.redirect('/foo/bar'); // relativa al root host name 
+res.redirect('http://example.com'); // absoluta 
+res.redirect(301, 'http://example.com'); // con status 
+res.redirect('../login'); // relativa al path actual 
+res.redirect('back'); // vuelve al referer
+```
 
 ### Métodos de respuesta - render
-Renderiza una vista y envia el HTML resultante. Acepta un parámetro opcional 'locals' para dar variables locales a la vista.
+
+Renderiza una vista y envia el HTML resultante. Acepta un parámetro opcional `locals` para dar variables locales a la vista.
+
+```js
 // render de la vista index
 res.render('index');
+
 // render de la vista user con el objeto locals
 res.render('user', { name: 'Tobi' });
+```
+En el segundo ejemplo podríamos tener el objeto todas las propiedades del usuario y cuando cargue la vista `user` hacer que las muestre en el formulario.
 
 ### Métodos de respuesta - sendFile
-Envía un fichero como si fuera un estático.
-Además de la ruta del fichero acepta un objeto de opciones y un callback para comprobar el resultado de la transmisión.
-var options = { headers: {
-'x-timestamp': Date.now(),
-'x-sent': true }
-};
-res.sendFile(fileName, options);
 
+Envía un fichero como si fuera un fichero estático, lo intentaría mostrar en el navegador.
+
+Además de la ruta del fichero acepta un objeto de opciones y un callback para comprobar el resultado de la transmisión.
+
+```js
+var options = { 
+  headers: {
+    'x-timestamp': Date.now(),
+    'x-sent': true 
+  }
+};
+
+res.sendFile(fileName, options);
+```
 
 ## 51.- Ejercicio: rutas parámetros y respuestas (11:16)
  
