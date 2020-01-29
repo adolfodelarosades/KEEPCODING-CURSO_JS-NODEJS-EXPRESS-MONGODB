@@ -895,7 +895,7 @@ router.use(function (req, res, next) {
 
 En este caso estamos poniendo un middleware a un router que lo que hace es buscar un usuario por su id, lo que encuentra lo guarda en la petición `req` para que los middleware siguientes puedan usarlo.
 
-### Middlewares - Error-handling*
+### Middlewares - Error-handling
 
 Los pondremos los últimos, tras todas nuestras rutas en el fichero `app.js`. 
 Reciben un parámetro más `err` que se pone en primera posición.
@@ -945,8 +945,71 @@ app.use(cookieParser());
 
 Hay una [lista de los más usados](http://expressjs.com/en/resources/middleware.html)
 
-
 ## 53.- Ejercicio: un middleware sencillo (7:24)
+
+Vamos a incluir un Middleware en nuestro archivo routes `clientes.js`:
+
+* Añadir el middleware:
+
+```js
+...
+router.use(function(req, res, next) {
+    console.log('Middleware de router clientes');
+});
+...
+```
+
+* Ejecutar en el navegador la URL: `http://localhost:3000/clients`
+
+Podemos ver en la consola del servidor el mensaje: `Middleware de router clientes`
+
+<img src="images/consola-midellware.png">
+
+Pero si observamos el navegador no termina de responder, se queda pensando. Si abrimos las herramientas del desarrollador y cargamos la pestaña **Network** vemos como nuestra petición se encuentra **pending** pendiente de responder. Esto pasa por que en nuestro middleware ni respondemos ni llamamos a next y esta a la espera que alguién responda cosa que no pasara como lo tenemos códificado. 
+
+* Vamos a incluir `next()` en nuestro middleware:
+
+```js
+...
+router.use(function(req, res, next) {
+    console.log('Middleware de router clientes');
+    next();
+});
+...
+```
+
+* Ejecutar nuevamente en el navegador la URL: `http://localhost:3000/clients`
+
+Podemos ver en la consola del servidor el mensaje: `Middleware de router clientes`
+
+Y el navegador termina de responder correctamente.
+
+<img src="images/midellware-ok">
+
+Este middleware solo funciona a nivel de cliente es decir con URLs que usen clients como:
+
+* `http://localhost:3000/clients`
+* `http://localhost:3000/clients/5`
+* `http://localhost:3000/clients?name=John`
+* etc.
+
+A nivel de aplicación este middleware no funciona ya que lo definimos en el archivo router `clients.js`. Es decir que si cargamos la URL `http://localhost:3000` o `http://localhost:3000/users` el mensaje `Middleware de router clientes` no sale.
+
+<img src="images/midellware-app-01">
+
+Vamos a crear un middleware a nivel de aplicación en el archivo `app.js`.
+
+* Incluir el siguiente código:
+
+```js
+app.use(function(req, res, next) {
+   console.log('Middleware a nivel de app');
+});
+```
+
+
+
+
  
 ## 54.- Ejercicio: doble respuesta (3:27)
  
