@@ -714,17 +714,23 @@ router.get('/', function(req, res, next){
 module.exports = router;
 ```
 * Incluirlo en `app.js` con:
+
 ```js
 ...
 var clientsRouter = require('./routes/clients');
 ...
 app.use('/clients', clientsRouter);
 ```
+
 * Probarlo ejecutando `nodemon` (Si ya estaba cargado es necesario reiniciar cuando se modifica `app.js`
 * En el navegador cargar la URL `http://localhost:3000/clients`
+
 <img src="/images/clients-navegador.png">
+
 * Si intentamos pasar un parámetro con `http://localhost:3000/clients/5` tenemos:
+
 <img src="/images/clients-navegador-error.png">
+
 La ruta `http://localhost:3000/clients/5` no cuadra con ninguna de las rutas que hemos metido en express, por lo tanto express me dice que la ruta no se ha encontrado. 
 
 * Vamos a definir la ruta con parámetros en `clients.js`:
@@ -734,38 +740,50 @@ router.get('/:id', function(req, res, next) {
 });
 ```
 * Intentamos nuevamente pasar un parámetro con `http://localhost:3000/clients/5` tenemos:
+
 <img src="/images/clients-navegador-5.png">
+
 * Un parámetro diferente con `http://localhost:3000/clients/7` tenemos:
+
 <img src="/images/clients-navegador-7.png">
+
 * Podríamos mostrar el parámetro en la consola:
+
 ```js
 router.get('/:id', function(req, res, next) {
     console.log('Recibiendo parámetro id: ' + req.params.id);
     res.send('Recibiendo parámetro id: ' + req.params.id);
 });
 ```
+
 <img src="/images/clients-consola-7.png">
 
 **Nota: Los `console.log()` que hagamos saldrán en la consola del servidor, no en la consola del navegador.**
 
 * Introduzcamos una ruta para una petición POST en `clients.js`:
+
 ```js
 router.post('/', function(req, res, next) {
     console.log('req.body ' + req.body);
     res.json({recibiendo: req.body.num});
 });
 ```
+
 * Usaremos **Postman** para probar esta opción poniendo:
+
 <img src="/images/clients-postman-post.png">
-<img src="/images/request-body-vacio.png">
+
+<img src="/images/req-body-vacio.png">
+
 Como no hemos mandado nada en el body nos regresa un JSON vacío.
 
 ** Mandemos `num` en el body:
+
 <img src="/images/clients-postman-post-body.png">
-<img src="/images/request-body-77.png">
+
+<img src="/images/req-body-77.png">
 
 * Por último recibamos parámetro en la query string:
-
 
 ## 52.- Middlewares (7:57)
 
