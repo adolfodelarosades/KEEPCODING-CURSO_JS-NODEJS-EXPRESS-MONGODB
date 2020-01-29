@@ -783,7 +783,55 @@ Como no hemos mandado nada en el body nos regresa un JSON vacío.
 
 <img src="/images/req-body-77.png">
 
-* Por último recibamos parámetro en la query string:
+Por último recibamos parámetro en la query string.
+
+* Modificamos el método `get` para pintrar lo recibido en el query string:
+
+```js
+router.get('/', function(req, res, next) {
+    console.log('Query String: ', req.query);
+    console.log('Name: ', req.query.name);
+    console.log('Lastname: ', req.query.lastname);
+    res.send('Respuesta a clients');
+});
+```
+
+* Cargar en el navegador el URL: `http://localhost:3000/clients?name=Leo&lastname=Messi`
+
+<img src="/images/clients-navegador-query-string.png">
+
+<img src="/images/consola-query-string.png">
+
+### Código Final cliente.js
+
+```js
+"use strict";
+
+var express = require('express');
+var router = express.Router();
+
+// No se mandan parámetros o se mandan como query string
+router.get('/', function(req, res, next) {
+    console.log('Query String: ', req.query);
+    console.log('Name: ', req.query.name);
+    console.log('Lastname: ', req.query.lastname);
+    res.send('Respuesta a clients');
+});
+
+// Recibe parámetros como params
+router.get('/:id', function(req, res, next) {
+    console.log('Recibiendo parámetro id: ' + req.params.id);
+    res.send('Recibiendo parámetro id: ' + req.params.id);
+});
+
+// Recibe parámetros enviados en el body
+router.post('/', function(req, res, next) {
+    console.log('req.body ', req.body);
+    res.json({ recibiendo: req.body.num });
+});
+
+module.exports = router;
+```
 
 ## 52.- Middlewares (7:57)
 
