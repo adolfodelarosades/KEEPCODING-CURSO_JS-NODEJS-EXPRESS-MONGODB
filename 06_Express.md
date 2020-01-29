@@ -836,54 +836,114 @@ module.exports = router;
 ## 52.- Middlewares (7:57)
 
 ### Middlewares
+
 Un Middleware es un handler que se activa ante unas determinadas peticiones o todas, antes de realizar la acción principal de una ruta.
-Podemos poner tantos middlewares como nos hagan falta.
-Una aplicación Express es esencialmente una serie de llamadas a middlewares.
+
+Podemos poner tantos middlewares como nos hagan falta (para hacer logs, busquedas en BD, para autentícar, para responder a peticiones).
+
+Una aplicación Express es esencialmente una serie de llamadas a middlewares, el último middleware responden a la petición.
 
 ### Middlewares
-Tiene acceso al objeto de la petición (request), al objeto de la respuesta (response) y al siguiente middleware (next).
+
+Tiene acceso al objeto de la petición (request), al objeto de la respuesta (response) y al siguiente middleware (next). Un middleware típico es:
+
+```js
 router.get('/', function(req, res, next) { }
-Si un middleware no quiere terminar una llamada debe llamar
-al siguiente next() para pasarle el control, de lo contrario la
-petición quedará sin respuesta, y el que la hizo (por ejemplo un browser) se quedará esperando hasta su tiempo límite de time-out.
+```
+
+**Si un middleware no quiere terminar una llamada debe llamar al siguiente next() para pasarle el control, de lo contrario la petición quedará sin respuesta, y el que la hizo (por ejemplo un browser) se quedará esperando hasta su tiempo límite de time-out.**
 
 ### Middlewares - tipos
+
 Comúnmente establecemos middlewares de los siguientes tipos:
-Application-level —> todas las peticiones
-Router-level —> las peticiones a un router determinado Error-handling —> controlan posibles errores de forma global Built-in —> añaden funcionalidad estándar
-Third-party —> añaden funcionalidad de terceros
 
-### Middlewares - app
-Se conecta al objeto instancia de la aplicación (app) con app.use o app.METHOD, por ejemplo:
+* **Application-level** —> todas las peticiones
+* **Router-level** —> las peticiones a un router determinado 
+* **Error-handling** —> controlan posibles errores de forma global 
+* **Built-in** —> añaden funcionalidad estándar
+* **Third-party** —> añaden funcionalidad de terceros
+
+### Middlewares - Application-level
+
+Se conecta al objeto instancia de la aplicación (app) con `app.use` o `app.METHOD`, por ejemplo:
+
+```js
 var app = express();
-app.use(function (req, res, next) { console.log('Time:', Date.now()); next();
-});
 
-### Middlewares - router
-Se conecta a un router con router.use o router.METHOD, por ejemplo:
+app.use(function (req, res, next) { 
+  console.log('Time:', Date.now()); 
+  next();
+});
+```
+
+Los middlewares van colgados directamente en la app de Express, que atiende a todas las peticiones por que no estamos especificando un filtro de ruta, puede hacer cualquier cosa con `req`, `res` o `next`, en este caso para todas las peticiones escrive la fecha en que se lanza la petición y después llama a `next()` para que atienda esa petición. 
+
+### Middlewares - Router-level
+
+Se conecta a un router con `router.use` o `router.METHOD`, por ejemplo:
+
+```js
 var router = express.Router();
-router.use(function (req, res, next) { userModel.find(req.body.userId, function (user) {
-req.user = user; next();
-}); });
 
-### Middlewares - error
-Los pondremos los últimos, tras todas nuestras rutas. Reciben un parámetro más err.
-app.use(function(err, req, res, next) { console.error(err.stack); res.status(500).send('Something broke!');
+router.use(function (req, res, next) { 
+  userModel.find(req.body.userId, function (user) {
+    req.user = user; 
+    next();
+  }); 
 });
+```
+
+En este caso estamos poniendo un middleware a un router que lo que hace es buscar un usuario por su id, lo que encuentra lo guarda en la petición `req` para que los middleware siguientes puedan usarlo.
+
+### Middlewares - Error-handling*
+
+Los pondremos los últimos, tras todas nuestras rutas en el fichero `app.js`. 
+Reciben un parámetro más `err` que se pone en primera posición.
+Cuando uno de los middleware que se estan ejecutando pase a next un error, Express en lugar de dar el control al siguiente middleware que le toque, se saltara todos los middlewares que haya hasta llegar al middleware error y va a hacer lo que pongamos en su cuerpo. 
+
+```js
+app.use(function(err, req, res, next) { 
+  console.error(err.stack); 
+  res.status(500).send('Something broke!');
+});
+
 // en una ruta anterior podemos haber hecho next(err);
+```
+
 Podemos devolver lo que nos convenga, un JSON con un error, una página de error, un texto, etc.
 
-### Middlewares - built-in
-Son middlewares estándar que proveen los mantenedores de Express. Por ejemplo, express.static:
-app.use(express.static('public', options)); Se puede revisar una lista en su página de github.
+### Middlewares - Built-in
 
-### Middlewares - de terceros
+Son middlewares estándar que proveen los mantenedores de Express.
+
+Por ejemplo, `express.static`:
+
+```js
+app.use(express.static('public', options)); 
+```
+
+Se puede revisar una lista en su página de [github](https://github.com/senchalabs/connect?_ga=1.96605535.1731670228.1440846106%23middleware).
+
+Es un repositorio de GitHub de **senchalabs** que son los que desarrollarón el módulo de Node que se llama **Conenect** usado por Express para gestionar las conexiones, donde se muestra un listado de los Midllware que se pueden considerar oficiales.
+
+Hay una [lista de los más usados](http://expressjs.com/en/resources/middleware.html)
+
+### Middlewares - Third-party (de terceros)
+
+Son middlewares hechos por gente que los pública en [https://www.npmjs.com/](https://www.npmjs.com/) para que los demás los usemos, también nosotros podríamos desarrollar los nuestros y públicarlos.
+
 Podemos instalarlos con npm y cargarlos como los anteriores.
-$ npm install cookie-parser
+
+`$ npm install cookie-parser`
+
+```js
 var cookieParser = require('cookie-parser');
+
 // load the cookie parsing middleware
 app.use(cookieParser());
-Hay una lista de los más usados en http://expressjs.com/resources/ middleware.html
+```
+
+Hay una [lista de los más usados](http://expressjs.com/en/resources/middleware.html)
 
 
 ## 53.- Ejercicio: un middleware sencillo (7:24)
