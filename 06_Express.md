@@ -984,7 +984,7 @@ Podemos ver en la consola del servidor el mensaje: `Middleware de router cliente
 
 Y el navegador termina de responder correctamente.
 
-<img src="images/midellware-ok">
+<img src="images/midellware-ok.png">
 
 Este middleware solo funciona a nivel de cliente es decir con URLs que usen clients como:
 
@@ -995,7 +995,7 @@ Este middleware solo funciona a nivel de cliente es decir con URLs que usen clie
 
 A nivel de aplicación este middleware no funciona ya que lo definimos en el archivo router `clients.js`. Es decir que si cargamos la URL `http://localhost:3000` o `http://localhost:3000/users` el mensaje `Middleware de router clientes` no sale.
 
-<img src="images/midellware-app-01">
+<img src="images/midellware-app-01.png">
 
 Vamos a crear un middleware a nivel de aplicación en el archivo `app.js`.
 
@@ -1003,13 +1003,71 @@ Vamos a crear un middleware a nivel de aplicación en el archivo `app.js`.
 
 ```js
 app.use(function(req, res, next) {
-   console.log('Middleware a nivel de app');
+    console.log('Middleware a nivel de app');
+    next();
 });
 ```
 
+**NOTA: La definición del middleware debe estar antes de la definición de las rutas sino lo ignora**
 
+* Si cargamos la URL `http://localhost:3000` o `http://localhost:3000/users` el mensaje `Middleware a nivel de app` ya sale. Incluso también sale para `http://localhost:3000/clients` junto con su propio mensaje:  
 
+<img src="images/midellware-app-02.png">
 
+Vamos a hacer que por lo que fuera en el middleware de aplicación no pudieramos continuar por que existe un error:
+
+* Modificar el middleware para indicar que existe un error:
+
+```js
+app.use(function(req, res, next) {
+    console.log('Middleware a nivel de app');
+    next({status: 500, message: 'Imposible continuar ...'});
+});
+```
+
+* Si cargamos la URL `http://localhost:3000`, `http://localhost:3000/users` o `http://localhost:3000/clients` tendremos:
+
+<img src="images/midellware-500.png">
+
+¿Por que lo pinta tan bonito? Cuando encuentra el error pasa lo siguiente.
+
+* Salta todos los middleware que estan definidos después del que nos otros escribimos es decir todos estos:
+
+```js
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/clients', clientsRouter);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    next(createError(404));
+});
+```
+
+* Llega al middleware de error, el cual renderiza la página `error`:
+
+```js
+// error handler
+app.use(function(err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
+});
+```
+
+* Si veo la vista de error `error.ejs`: 
+
+```js
+<h1><%= message %></h1>
+<h2><%= error.status %></h2>
+<pre><%= error.stack %></pre>
+```
+
+Veo que renderiza los valores que se le asignarón a nuestro objeto `res.locals` en el middleware de error.
  
 ## 54.- Ejercicio: doble respuesta (3:27)
  
