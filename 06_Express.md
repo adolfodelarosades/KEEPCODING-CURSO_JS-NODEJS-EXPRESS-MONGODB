@@ -1067,7 +1067,7 @@ app.use(function(err, req, res, next) {
 <pre><%= error.stack %></pre>
 ```
 
-Veo que renderiza los valores que se le asignarón a nuestro objeto `res.locals` en el middleware de error.
+Veo que renderiza los valores que se le asignarón a nuestro objeto `res.locals` en el middleware de error, por eso nuestra página sale con ese diseño. El stack como no se lo pasamos no lo renderiza.
  
 ## 54.- Ejercicio: doble respuesta (3:27)
  
