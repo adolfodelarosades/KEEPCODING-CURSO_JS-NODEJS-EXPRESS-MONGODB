@@ -3,10 +3,39 @@
 [Documentación](https://github.com/adolfodelarosades/KEEPCODING-CURSO_JS-NODEJS-EXPRESS-MONGODB/blob/master/pdfs/08_MongoDB.pdf)
 
 ## 60.- Introducción a MongoDB (4:40)
- 
+
+### Bases de datos - MongoDB
+
+MongoDB en una base de datos no relacional sin esquemas, esto significa principalmente que:
+
+* No tenemos JOIN, tendremos que hacerlo nosotros
+* Cada registro podría tener una estructura distinta 
+* Mínimo soporte a transacciones
+
+A la hora de decidir que base de datos usar para una aplicación debemos pensar como vamos a organizar los datos para saber si nos conviene usar una base de datos relacional o no relacional.
+
+### Bases de datos - MongoDB
+
+Usar una base de datos como MongoDB puede darnos más rendimiento principalmente por alguna de estas razones:
+
+* No tiene que gestionar transacciones
+* No tiene que gestionar relaciones
+* No es necesario convertir objetos a tablas y tablas a objetos ([Object- relation Impedance Mismatch](https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch))
+   
 ## 61.- Instalación de MongoDB (7:53)
  
 ## 62.- Uso básico MongoDB - Parte I (7:02)
+
+### Bases de datos - MongoDB shell basics
+
+Para acceder a la shell usaremos:
+
+```sh
+~/master/cursonode/mongodb-server/bin/mongo 
+MongoDB shell version: 3.0.4
+connecting to: test
+>
+```
  
 ## 63.- Uso básico MongoDB - Parte II (5:58)
  
@@ -39,27 +68,14 @@
 ## 76.1.- Para descargar
 
 
-Bases de datos - MongoDB
-MongoDB en una base de datos no relacional sin esquemas, esto significa principalmente que:
-No tenemos JOIN, tendremos que hacerlo nosotros Cada registro podría tener una estructura distinta Mínimo soporte a transacciones
-A la hora de decidir que base de datos usar para una aplicación debemos pensar como vamos a organizar los datos para saber si nos conviene usar una base de datos relacional o no relacional.
-• • •
-© All rights reserved. www.keepcoding.io
+
+
  
  
-Bases de datos - MongoDB
-Usar una base de datos como MongoDB puede darnos más rendimiento principalmente por alguna de estas razones:
-- No tiene que gestionar transacciones
-- No tiene que gestionar relaciones
-- No es necesario convertir objetos a tablas y tablas a objetos (Object- relation Impedance Mismatch)
-   © All rights reserved. www.keepcoding.io
+
    
-Bases de datos - MongoDB shell basics
-Para acceder a la shell usaremos:
-~/master/cursonode/mongodb-server/bin/mongo MongoDB shell version: 3.0.4
-connecting to: test
->
- © All rights reserved. www.keepcoding.io
+
+ 
    
 Bases de datos - MongoDB shell basics
 show dbs
