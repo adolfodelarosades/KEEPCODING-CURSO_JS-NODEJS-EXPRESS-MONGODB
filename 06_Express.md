@@ -1152,90 +1152,158 @@ Al poner el `return` estaría finalizando el middeleware y ya no continuaria con
 
 ## 55.- Vistas Templates (11:09)
 
-### Templates
-Además de servir html estático podemos usar sistemas de plantillas.
-Express por defecto monta Jade, podemos cambiarlo fácilmente, por ejemplo a EJS que es uno de los más usados.
+Sistemas de plantillas (Templates) vamos a hablar de que son, como usarlos y como cambiarlos. 
 
 ### Templates
+
+Además de servir HTML estático podemos usar sistemas de plantillas. Estas plantillas nos ayudarán a mezclar HTML o JS con datos que mandamos desde nuestros controladores.
+
+Express por defecto monta **Jade**, podemos cambiarlo fácilmente, por ejemplo a **EJS** que es uno de los más usados.
+
+### Templates
+
 Hay muchos sistemas de templates en Javascript, pero los que cumplen con el estándar de Express están listados en:
-https://www.npmjs.com/package/consolidate#supported-template- engines
+[https://www.npmjs.com/package/consolidate#supported-template- engine](https://www.npmjs.com/package/consolidate#supported-template- engine)
 
 ### Templates
-Para instalar un sistema de templates lo instalaremos con npm install ejs —save y nos aseguramos de que nuestra aplicación lo usa con un par de settings:
-views, el directorio donde estarán nuestras plantillas, por ejemplo: app.set('views', './views')
-view engine, el template engine a usar, por ejemplo: app.set('view engine', 'jade')
+
+Para instalar un sistema de templates lo instalaremos con:
+
+`npm install ejs --save`
+
+y nos aseguramos de que nuestra aplicación lo usa con un par de settings:
+
+* **views**, el directorio donde estarán nuestras plantillas, por ejemplo:
+
+`app.set('views', './views')`
+
+* **view engine**, el template engine a usar, por ejemplo: 
+
+`app.set('view engine', 'jade')`
+
 Express lo carga automáticamente y ya podremos usarlo.
 
 ### Templates - Jade
+
+Ejemplo de **Jade**:
+
+```jade
 app.set('view engine', 'jade');
+
 doctype html
 html
-head
-title= title
-link(rel='stylesheet', href='/stylesheets/style.css')
-body
-  p esto es un párrafo
-  
-### Templates - Jade
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    p esto es un párrafo
+```
+
+Cuando **Jade** compila la plantilla anterior produce el siguiente HTML:
+
+```html
 <!DOCTYPE html>
 <html>
-<head>
-<title>Express</title>
-<link rel="stylesheet" href="/stylesheets/style.css">
+  <head>
+    <title>Express</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
   </head>
   <body>
     <p>esto es un párrafo</p>
   </body>
 </html>
+```
 
 ### Templates - EJS
+
 EJS añade su funcionalidad sobre HTML estándar.
+
 Esto puede hacer que nos sea más fácil depurar errores o integrar y mantener una maquetación realizada por un maquetador especializado.
 
 ### Templates
+
 Para proporcionar datos variables a las vistas le damos un objeto en la llamada render:
-res.render('index', { titulo: 'Anuncios' });
+
+`res.render('index', { titulo: 'Anuncios' });`
+
+Cuando indicamos la vista que queremos renderizar en este caso `ìndex`, añadimos un parámetro más, un objeto con todas las propiedades y valores que deseamos pasarle.
+
 En la vista tendremos disponible el contenido de ese objeto.
-<title><%= titulo %></title>
+
+`<title><%= titulo %></title>`
  
- ### Templates
-Para reemplazar datos usaremos esta notación:
-<title><%= titulo %></title>
+### Templates
+
+Existen varias formas de renderizar los valores que son pasados a la vista.
+
+* Para reemplazar datos usaremos esta notación:
+
+`<title><%= titulo %></title>`
  
- ### Templates - sin escapar
-El valor será escapado para evitar la inyección de código. Si queremos incluir html usaríamos <%- %>
-<p><%- sinEscapar %></p>
+ Con el igual hago referencia a la variable para que pinte su contenido, dentro no puedo poner nada más.
  
- ### Templates - include
-Podemos incluir el contenido de otras plantillas.
-<% include otra/plantilla %>
+### Templates - sin escapar
+
+* El valor será escapado para evitar la inyección de código. Si queremos incluir HTML usaríamos `<%- %>`:
+
+`<p><%- sinEscapar %></p>`
+
+Con el signo - permite renderizar código HTML.
+ 
+### Templates - include
+
+Podemos incluir el contenido de otras plantillas con:
+
+`<% include otra/plantilla %>`
+
 views
-- index.js - otra
-- plantilla.ejs
+  - index.js 
+  - otra
+    - plantilla.ejs
+
+Esto es muy útil para hacerr páginas maestras, podemos hacer un include para el header y/o footer, etc.
 
 ### Templates - condiciones
+
 Usar bloques de forma condicional es sencillo.
+
+```html
 <% if (condicion.estado) { %>
-<p><%= condicion.segundo %> es par</p>
+  <p><%= condicion.segundo %> es par</p>
 <% } else { %>
-<p><%= condicion.segundo %> es impar</p>
+  <p><%= condicion.segundo %> es impar</p>
 <% } %>
+```
  
- ### Templates - iterar
+ Estamos combinando código con HTML e impresión de variables.
+ 
+### Templates - iterar
+ 
 O por ejemplo iterar bucles.
-<% users.forEach(function(user){ %> <p><%= user.name %></p>
+
+```html
+<% users.forEach(function(user){ %> 
+  <p><%= user.name %></p>
 <% }) %>
- 
- ### Templates - código
+``` 
+
+Si la vista recibe un array de usarios, los itera y por cada uno imprime su nombre en un parrafo.
+
+### Templates - código
+
 En resumen, entre los tags <% y %> (sin usar '=' o '-') podemos colocar cualquier estructura de código válida en Javascript.
+
 Pero sin pasarnos. Esto es una vista, y meter código aquí significa que tenemos funcionalidad en las vistas.
+
 Es recomendable tener toda o la mayor parte de la funcionalidad en los modelos y en los controladores.
 
 ### Templates
-Podemos encontrar su documentación y más ejemplos en: https://github.com/mde/ejs
 
+Podemos encontrar su documentación y más ejemplos en: [https://github.com/mde/ejs](https://github.com/mde/ejs)
 
 ## 56.- Ejercicio: vistas (9:19)
+
+
 
 ### Ejercicio - Listar módulos
 Representar los resultados de la función versionModulos hecha previamente en una página, con los módulos de Express.
