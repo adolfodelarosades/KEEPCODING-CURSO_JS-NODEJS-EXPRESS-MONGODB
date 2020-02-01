@@ -1070,7 +1070,41 @@ app.use(function(err, req, res, next) {
 Veo que renderiza los valores que se le asignarón a nuestro objeto `res.locals` en el middleware de error, por eso nuestra página sale con ese diseño. El stack como no se lo pasamos no lo renderiza.
  
 ## 54.- Ejercicio: doble respuesta (3:27)
- 
+
+Para hacer este ejercicio vamos a
+
+* Modificar el middleware en `app.js` para indicar que NO existe un error:
+
+```js
+app.use(function(req, res, next) {
+    console.log('Middleware a nivel de app');
+    next();
+    //next({status: 500, message: 'Imposible continuar ...'});
+});
+```
+* Al hacer la llamada a la URL `http://localhost:3000/clients` tenemos:
+
+<img src="/images/midellware-clients.png">
+
+Habíamos visto que en un middleware tenemos dos opciones:
+
+* Pasamos a l siguiente middleware con `next()`
+* O respondemos a la petición con `res.send('Algo...')``
+
+Que pasaría si tenemos ambas cosas, modifiquemos el middleware en `clients.js`:
+
+```js
+router.use(function(req, res, next) {
+    console.log('Middleware de router clientes');
+    req.send('Respuesta');
+    next();
+});
+```
+
+
+
+
+
 ## 55.- Vistas Templates (11:09)
 
 ### Templates
