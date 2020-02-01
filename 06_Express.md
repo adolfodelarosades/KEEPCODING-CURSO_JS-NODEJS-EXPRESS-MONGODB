@@ -1427,6 +1427,7 @@ Para renderizarla métemos lo siguiente en la vista `index.ejs`:
 
 <img src="/images/express-navegador-06.png">
 
+<img src="/images/express-navegador-07.png">
 
 Por último vamos a mandar un array de objetos en `ìndex.js` para usar un bucle:
 
