@@ -1101,9 +1101,54 @@ router.use(function(req, res, next) {
 });
 ```
 
+<img src="/mages/clients-2llamadas.png">
 
+<img src="/mages/error-2llamadas.png">
 
+Por un lado en el navegador nos llega la respuesta hecha con `req.send('Respuesta');` pero por otro lado obtenemos un error en la consola.
 
+El error es `Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client` que nos dice `no se pueden establecer encabezados después de enviarlos al cliente`, esto es un claro indicador de que se esta respondiendo dos veces.
+
+Como ya hemos visto ejecuta `req.send('Respuesta');` despues el `next()` que nos lleva al siguiente middleware:
+
+```js
+// No se mandan parámetros o se mandan como query string
+router.get('/', function(req, res, next) {
+    console.log('Query String: ', req.query);
+    console.log('Name: ', req.query.name);
+    console.log('Lastname: ', req.query.lastname);
+    res.send('Respuesta a clients');
+});
+```
+
+Ejecuta los `console.log`, pero cuando llega a `res.send('Respuesta a clients');` nos marca el error, ya que la respuesta la había realizado previamente.
+
+El error se nos puede presentar por que nuestro código puede tener un error típico:
+
+```js
+router.use(function(req, res, next) {
+    console.log('Middleware de router clientes');
+    if(condicion){
+       res.send('Respuesta');
+    }
+    next();
+});
+```
+
+Para corregirlo tenemos dos opciones una es poner un `return`:
+
+```js
+router.use(function(req, res, next) {
+    console.log('Middleware de router clientes');
+    if(condicion){
+       res.send('Respuesta');
+       return;
+    }
+    next();
+});
+```
+
+Al poner el `return` estaría finalizando el middeleware y ya no continuaria con el `next()` como en el caso de arriba, o bien se podría tener un `else`, pero en node no lo recomiendan mucho según el autor para evitar mucha identación, usan la estructura anterior, cuando se cumple una condición salen con un `return`.
 
 ## 55.- Vistas Templates (11:09)
 
