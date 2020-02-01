@@ -543,7 +543,7 @@ La petición request `req` tiene una propiedad tipo objeto `params` que contiene
 
 Un ejemplo de llamada podría ser:
 
-**`PUT http://localhost:3000/apiv1/anuncios/55`**
+**`PUT http://localhost:30003/apiv1/anuncios/55`**
 
 *Podemos combinarlo con los otros*
 
@@ -1303,8 +1303,191 @@ Podemos encontrar su documentación y más ejemplos en: [https://github.com/mde/
 
 ## 56.- Ejercicio: vistas (9:19)
 
+En nuestro proyecto tenemos la route `index.js` con el siguiente código:
 
+```js
+var express = require('express');
+var router = express.Router();
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+    res.render('index', { title: 'Express' });
+});
+
+module.exports = router;
+```
+
+Aquí vemos claramente como le estamos pasando un objeto con el valor para `title` a la vista `index.ejs`:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+  </body>
+</html>
+```
+
+Vemos que es una plantilla EJS y que ocupa `<%= title %>` para renderizar el valor de `title` en varios sitios de la página.
+
+* Cargar en el navegador la URL `localhost:3000`
+
+<img src="/images/express-navegador-02.png">
+
+Vamos añadir alguna propiedad más para pasarsela a la vista, en `index.js`:
+
+```js
+var express = require('express');
+var router = express.Router();
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+    res.render('index', {
+        title: 'Express',
+        description: '<p>Infraestructura web rápida, minimalista y flexible para Node.js</p>'
+    });
+});
+
+module.exports = router;
+```
+
+En la vista `index.ejs` incluimos en código para que lo renderice:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %>
+    </p>
+    <%= description %>
+    <%- description %>
+</body>
+</html>
+```
+
+<img src="/images/express-navegador-05.png">
+
+Con ` <%= description %>` No esta inyectando el código lo esta pintando como tal, el código no se ejecuta aparece como un texto. Con `<%- description %>` si que inyectamos el código y lo renderiza sin problema.
+
+Vamos a meter una condición en `index.js`: 
+
+```js
+var express = require('express');
+var router = express.Router();
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+    var segundo = (new Date()).getSeconds();
+
+    res.render('index', {
+        title: 'Express',
+        description: '<p>Infraestructura web rápida, minimalista y flexible para Node.js</p>',
+        condicion: {
+            segundo: segundo,
+            estado: segundo % 2 === 0
+        }
+    });
+});
+
+module.exports = router;
+```
+
+Para renderizarla métemos lo siguiente en la vista `index.ejs`:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <%= description %>
+    <%- description %>
+    <% if(condicion.estado) { %>
+        <p><%= condicion.segundo %> es Par</p>
+    <% } else { %>
+        <p><%= condicion.segundo %> es Impar</p>
+    <% } %>
+</body>
+</html>
+```
+
+<img src="/images/express-navegador-06.png">
+
+
+Por último vamos a mandar un array de objetos en `ìndex.js` para usar un bucle:
+
+Vamos a meter una condición en `index.js`: 
+
+```js
+var express = require('express');
+var router = express.Router();
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+    var segundo = (new Date()).getSeconds();
+
+    res.render('index', {
+        title: 'Express',
+        description: '<p>Infraestructura web rápida, minimalista y flexible para Node.js</p>',
+        condicion: {
+            segundo: segundo,
+            estado: segundo % 2 === 0
+        },
+        caracteristicas: [{ name: 'Aplicaciones web' }, { name: 'API' }, { name: 'Rendimiento' }, { name: 'LoopBack' }]
+    });
+});
+
+module.exports = router;
+```
+
+Para renderizarlo métemos lo siguiente en la vista `index.ejs`:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <%= description %>
+    <%- description %>
+    <% if(condicion.estado) { %>
+        <p><%= condicion.segundo %> es Par</p>
+    <% } else { %>
+        <p><%= condicion.segundo %> es Impar</p>
+    <% } %>
+    <h3>Características</h3>
+    <ul>
+       <% caracteristicas.forEach( function (car) { %>
+          <li>
+              <%= car.name %>
+          </li>
+       <% }) %>
+    </ul> 
+</body>
+</html>
+```
+
+<img src="/images/express-navegador-08.png">
 
 ### Ejercicio - Listar módulos
+
 Representar los resultados de la función versionModulos hecha previamente en una página, con los módulos de Express.
 Los módulos cuya versión sea menor a 1.0 deberán salir en rojo. En que orden salen?
