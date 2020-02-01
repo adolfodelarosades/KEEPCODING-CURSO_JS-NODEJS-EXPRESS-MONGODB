@@ -1101,9 +1101,9 @@ router.use(function(req, res, next) {
 });
 ```
 
-<img src="/mages/clients-2llamadas.png">
+<img src="/images/clients-2llamadas.png">
 
-<img src="/mages/error-2llamadas.png">
+<img src="/images/error-2llamadas.png">
 
 Por un lado en el navegador nos llega la respuesta hecha con `req.send('Respuesta');` pero por otro lado obtenemos un error en la consola.
 
