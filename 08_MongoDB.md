@@ -401,8 +401,9 @@ Para ahorrarnos dos variables que no se usaban en ningún otro sitio.
 
 * Comprobar que los URL `http://localhost:3000/` y `http://localhost:3000/clients` sigan funcionando y que `http://localhost:3000/users` ya no se cargue.
 
-### Usar Mongoose en nuestro proyecto
+## 71.- Ejercicio: modelos consultas - Parte II (8:45)
 
+### Usar Mongoose en nuestro proyecto
 
 Empecemos por instalar mongoose:
 
@@ -499,6 +500,8 @@ require('./models/Agente');
 
 Una vez arrancado el servidor se conecta a la base de datos, y Mongoose conocerá los modelos que hemos definido y podemos utilizarlos en la aplicación.
 
+## 72.- Ejercicio: modificaciones - Parte I (8:54)
+
 ### Creación del API
 
 * Dentro de la carpeta `routes` crear la carpeta `apiv1`
@@ -513,6 +516,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var Agente = mongoose.model('Agente');
 
+// Recuperar lista de agentes
 router.get('/', function(req, res, next) {
     Agente.find().exec( function( err, list){
         if(err) {
@@ -536,7 +540,118 @@ app.use('/apiv1/agentes', require('./routes/apiv1/agentes'));
 
 <img src="/images/api-agentes.png">
 
-## 71.- Ejercicio: modelos consultas - Parte II (8:45)
+Tenemos instalada la Extensión **json formatter** de chrome para que se vea bien.
+ 
+* Si realizamos una consulta que no existe como por ejemplo `http://localhost:3000/apiv1/agentes/5` obtenemos una vista que pinta el error obtenido:
+
+<img src="/images/api-agente-error.png">
+
+Un API no debería devolver una vista, debería devolver información que tiene que tratar otra aplicación, un API lo usan aplicaciones no lo usan personas. Por lo que en los errores deberíamos devolver también JSON. Para ello en `app.js` vamos a implementar una función para saber si el URL que se esta metiendo es del API y si es del API y existe un error responder con un código de error JSON, esto lo logramos con el siguiente código:
+
+```js
+// error handler
+app.use(function(err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+    // render the error page
+    res.status(err.status || 500);
+    if (isAPI(req)) {
+        res.json({ ok: false, error: err.message });
+        return;
+    }
+    res.render('error');
+});
+
+function isAPI(req) {
+    return req.originalUrl.indexOf('/api') === 0;
+}
+```
+
+* Si nuevamente realizamos una consulta a la URL `http://localhost:3000/apiv1/agentes/5` obtenemos una respuesta en formato JSON: 
+
+<img src="/images/api-agente-error-json.png">
+
+### Crear Middleware para Guardar Agente
+
+* En `agente.js` insertar el siguiente middleware:
+
+```js
+// Crear un Agente
+router.post('/', function(req, res, next) {
+    console.log('BODY: ', req.body);
+
+    var agente = new Agente(req.body);
+
+    agente.save(function(err, agenteGuardado) {
+        if (err) {
+            return next(err);
+        }
+        res.json({ ok: true, agente: agenteGuardado });
+    });
+});
+```
+* Insertar un agente mediante Postman:
+
+<img src="/images/api-agente-postman.png">
+
+* Si cargamos el URL `http://localhost:3000/apiv1/agentes` veremos que ya esta incluido el agente que ingresamos con Postman:
+
+<img src="/images/api-agentes-new.png">
+
+## 73.- Ejercicio: modificaciones - Parte II (9:39)
+
+### Crear Middleware para Actualizar Agente
+
+* En `agente.js` insertar el siguiente middleware:
+
+```js
+// Actualizar un Agente
+router.put('/:id', function(req, res, next) {
+    var id = req.param.id;
+    Agente.update({ _id: id }, req.body, function( err, agenteActualizado ) {
+        if (err) {
+            return next(err);
+        }
+        res.json({ ok: true, agente: agenteActualizado });
+    })
+});
+```
+* Actualizar un agente mediante Postman:
+
+<img src="/images/api-agentes-put-postman.png">
+
+* Si cargamos el URL `http://localhost:3000/apiv1/agentes` veremos que ya esta presente el cambio hechos al agente que modificamos con Postman:
+
+<img src="/images/api-agentes-update.png">
+
+### Crear Middleware para Actualizar Agente
+
+* En `agente.js` insertar el siguiente middleware:
+
+```js
+// Borrar un agente
+router.delete('/:id', function(req, res, next) {
+    var id = req.params.id;
+    Agente.remove({ _id: id }, function(err, result) {
+        if (err) {
+            return next(err);;
+        }
+        res.json({ ok: true, result: result });
+    });
+});
+```
+
+* Eliminar un agente mediante Postman:
+
+<img src="/images/api-agentes-delete-postman.png">
+
+* Si cargamos el URL `http://localhost:3000/apiv1/agentes` veremos que ya esta eliminado el agente que borramos con Postman:
+
+<img src="/images/api-agentes-delete.png">
+ 
+## 74.- Mongoose métodos (1:49)
 
 Mongoose
 Crear un método estático a un modelo:
@@ -563,14 +678,6 @@ if (err) { return cb(err);}
 return cb(null, rows); });
 });
  © All rights reserved. www.keepcoding.io
- 
-
- 
-## 72.- Ejercicio: modificaciones - Parte I (8:54)
- 
-## 73.- Ejercicio: modificaciones - Parte II (9:39)
- 
-## 74.- Mongoose métodos (1:49)
  
 ## 75. Ejercicio: metodos de modelo - Parte I (8:44)
  
