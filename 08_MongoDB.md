@@ -67,10 +67,63 @@ MongoDB shell version: 3.0.4
 connecting to: test
 >
 ```
- 
+
+O desde la carpeta donde lo tengamos instalado.
+
+Desde aquí podremos podremos escribir comandos de MongoDB para:
+
+* Añadir datos
+* Modificar datos
+* Consultar datos
+* Eliminar datos
+* Y mas...
+
+
+### Bases de datos - MongoDB shell basics
+
+Vamos a ver algunos comandos que podemos ejecutar:
+
+* `show dbs` Lista las bases de datos que tenemos en nuestro servidor.
+* `use <dbname>` Usar la base de datos que indiquemos.
+* `show collections` Mostrar las colecciones de la base de datos usada.
+* `show users` Mostrar los usarios de la base de datos
+* `db.agentes.find().pretty()` Mostrar el contenido de la colección agentes en formato JSON
+* `db.agentes.insert({name: "Brown", age: 37})` Insertar un documento en la colección agente
+* `db.agentes.remove({_id: ObjectId("55ead88991233838648570dd")})` Eliminar un documento de la colección agente por su id
+* `db.agentes.update({_id: ObjectId("55eadb4191233838648570de")}, {$set: {age: 38}})` Actualizar un documento de agentes -- cuidado con el $set! —-
+* `db.coleccion.drop()` Borra toda la colección 
+* `db.agentes.createIndex({name:1, age:-1})` Crea un indice por `name` y otro por `age`
+* `db.agentes.getIndexes()` Nos indica que indices tiene la colección
+
+Mas operaciones en la [referencia rápida a la shell de MongoDB](https://docs.mongodb.com/manual/reference/mongo-shell/)
+
 ## 63.- Uso básico MongoDB - Parte II (5:58)
- 
+
+<img src="/images/shell-01.png">
+
+<img src="/images/shell-02.png">
+
+<img src="/images/shell-03.png">
+
+<img src="/images/shell-04.png">
+
 ## 64.- Filtros en MongoDB - Parte I (6:15)
+
+Bases de datos - MongoDB queries
+db.agentes.find({ name : 'Smith'})
+db.agentes.find({ _id : ObjectId("55eadb4191233838648570de")}) db.agentes.find({ age: { $gt: 30}}) // $lt, $gte, $lte, ... db.agentes.find({ age: { $gt: 30, $lt: 40}}); db.agentes.find({ name: { $in: [ 'Jones', 'Brown']}}) //$nin db.agentes.find({ name: 'Smith', $or: [
+  { age: { $lt: 30}},
+{ age: 43 } // 'Smith' and ( age < 30 or age = 43) ] })
+  © All rights reserved. www.keepcoding.io
+   
+Bases de datos - MongoDB queries
+// subdocuments
+db.agentes.find({ 'producer.company': 'ACME'})
+// arrays
+db.agentes.find({ bytes: [ 5, 8, 9 ]}) // array exact db.agentes.find({ bytes: 5}) // array contain db.agentes.find({ 'bytes.0': 5}) // array position
+http://docs.mongodb.org/manual/reference/method/db.collection.find/#db.collection.find http://docs.mongodb.org/manual/tutorial/query-documents/
+   © All rights reserved. www.keepcoding.io
+   
  
 ## 65.- Filtros en MongoDB - Parte II (6:32)
  
@@ -108,33 +161,9 @@ connecting to: test
 
  
    
-Bases de datos - MongoDB shell basics
-show dbs
-use <dbname>
-show collections
-show users
-db.agentes.find().pretty()
-db.agentes.insert({name: "Brown", age: 37})
-db.agentes.remove({_id: ObjectId("55ead88991233838648570dd")}) db.agentes.update({_id: ObjectId("55eadb4191233838648570de")}, {$set: {age: 38}}) ————————————————————————————————————————————————————————— cuidado con el $set! —-
-db.coleccion.drop() db.agentes.createIndex({name:1, age:-1}) db.agentes.getIndexes()
-Mas operaciones en la referencia rápida a la shell de MongoDB
-  © All rights reserved. www.keepcoding.io
+
    
-Bases de datos - MongoDB queries
-db.agentes.find({ name : 'Smith'})
-db.agentes.find({ _id : ObjectId("55eadb4191233838648570de")}) db.agentes.find({ age: { $gt: 30}}) // $lt, $gte, $lte, ... db.agentes.find({ age: { $gt: 30, $lt: 40}}); db.agentes.find({ name: { $in: [ 'Jones', 'Brown']}}) //$nin db.agentes.find({ name: 'Smith', $or: [
-  { age: { $lt: 30}},
-{ age: 43 } // 'Smith' and ( age < 30 or age = 43) ] })
-  © All rights reserved. www.keepcoding.io
-   
-Bases de datos - MongoDB queries
-// subdocuments
-db.agentes.find({ 'producer.company': 'ACME'})
-// arrays
-db.agentes.find({ bytes: [ 5, 8, 9 ]}) // array exact db.agentes.find({ bytes: 5}) // array contain db.agentes.find({ 'bytes.0': 5}) // array position
-http://docs.mongodb.org/manual/reference/method/db.collection.find/#db.collection.find http://docs.mongodb.org/manual/tutorial/query-documents/
-   © All rights reserved. www.keepcoding.io
-   
+
 Bases de datos - MongoDB queries
 Ordenar:
 db.agentes.find().sort({age: -1}) Descartar resultados:
