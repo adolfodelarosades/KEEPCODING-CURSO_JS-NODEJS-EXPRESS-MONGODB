@@ -226,106 +226,150 @@ db.agentes.find({$text:{$search:'smith jones -mister'});
 ```
 
 Más info:
-[https://docs.mongodb.com/manual/tutorial/specify-language-for-text-index/](https://docs.mongodb.com/manual/tutorial/specify-language-for-text-index/)
+[https://docs.mongodb.com/manual/text-search/](https://docs.mongodb.com/manual/text-search/)
 
+[https://docs.mongodb.com/manual/tutorial/specify-language-for-text-index/](https://docs.mongodb.com/manual/tutorial/specify-language-for-text-index/)
  
 ## 68.- Ejercicio: uso desde Node.js con driver (8:44)
- 
-## 69.- Mongoose (4:35)
- 
-## 70.- Ejercicio: modelos consultas - Parte I (9:55)
- 
-## 71.- Ejercicio: modelos consultas - Parte II (8:45)
- 
-## 72.- Ejercicio: modificaciones - Parte I (8:54)
- 
-## 73.- Ejercicio: modificaciones - Parte II (9:39)
- 
-## 74.- Mongoose métodos (1:49)
- 
-## 75. Ejercicio: metodos de modelo - Parte I (8:44)
- 
-## 76.- Ejercicio: metodos de modelo - Parte II (8:07)
- 
-## 76.1.- Para descargar
 
+Ahora que conocemos un poco de MongoDB vamos a hacer una conexión a la base de datos desde NodeJS para ello utilizaremos el driver oficial de MongoDB aun que hay más drivers de la comunidad que se pueden utilizar. Esto ocurre con otros motores de base de datos.
 
+La forma de hacer esta conexión es la siguiente:
 
-
- 
- 
-
-   
-
- 
-   
-
-   
-
-
-   
-
-   
-
-   
-Bases de datos - MongoDB
-Ejemplo de uso MongoDB:
+```sh
 $ npm install mongodb
+```
+
+```js
 var client = require('mongodb').MongoClient;
-client.connect('mongodb://localhost:27017/cursonode', function(err, db) {
-if (err) throw err; db.collection('agentes').find({}).toArray(function(err, docs) {
-if (err) throw err; console.dir(docs); db.close();
-}); });
-ejemplos/db/mongodb
- © All rights reserved. www.keepcoding.io
+
+client.connect('mongodb://localhost:27017/cursonode', 
+function(err, db) {
+  if (err) throw err; 
+  db.collection('agentes').find({}).toArray(function(err, docs) {
+    if (err) throw err; 
+    console.dir(docs); 
+    db.close();
+  }); 
+});
+```
+
+Vamos a implementar esto en nuestro código.
+
+* En la carpeta `CURSONODE` crear la carpeta `mongodb_driver`
+* Dentro de `mongodb_driver` crear el archivo `index.js`
+* Desde la terminal entrar a la carpeta `mongodb_driver` con `cd mongodb_driver`
+* Pulsamos el comando `npm init` (damos enter a todo), me creará el archivo `package.json`
+* Instalamos MongoDB con `npm install mongodb --save`
+* En `index.js` introducimos el siguiente código:
+
+```js
+"use strict";
+
+var MongoClient = require('mongodb').MongoClient;
+
+MongoClient.connect('mongodb://localhost:27017/', function(err, client) {
+
+    const db = client.db('cursenode');
+
+    if (err) {
+        console.log(err);
+        return process.exit();
+    }
+    console.log("Connected successfully to server");
+
+    db.collection('agentes').find().toArray(function(err, docs) {
+        if (err) {
+            console.log(err);
+            return process.exit();
+        }
+        console.log('DOCUMENTOS:', docs);
+        client.close();
+    });
+});
+```
+
+<img src="/images/node-conexion-mongodb">
+
+Para mas información [npm mongodb](https://www.npmjs.com/package/mongodb)
+
+
+## 69.- Mongoose (4:35)
+
+[Mongoose](https://mongoosejs.com/) es una herramienta que nos permite persistir objetos en MongoDB, recuperarlos y mantener esquemas de estos fácilmente.
+
+Este tipo de herramientas suelen denominarse **ODM** (Object Document Mapper).
    
-Mongoose
-  © All rights reserved. www.keepcoding.io
-   
-Mongoose
-Mongoose es una herramienta que nos permite persistir objetos en MongoDB, recuperarlos y mantener esquemas de estos fácilmente.
-Este tipo de herramientas suelen denominarse ODM (Object Document Mapper).
-  © All rights reserved. www.keepcoding.io
-   
-Mongoose
-Instalación como siempre:
+### Instalación de Mongoose
+
+```sh
 npm install mongoose --save
- © All rights reserved. www.keepcoding.io
-   
-Mongoose
+```
+
+### Conectar a la Base de Datos con Mongoose
+
 Conectar a la base de datos:
-var mongoose = require('mongoose'); var conn = mongoose.connection;
+
+```js
+var mongoose = require('mongoose'); 
+var conn = mongoose.connection;
+
 conn.on('error', console.error.bind(console, 'mongodb connection error:'));
 conn.once('open', function() {
-console.info('Connected to mongodb.'); });
-mongoose.connect('mongodb://localhost/diccionario');?
-  © All rights reserved. www.keepcoding.io
-   
-Mongoose
-Crear un modelo:
+  console.info('Connected to mongodb.'); 
+});
+mongoose.connect('mongodb://localhost/diccionario');
+```
+
+Tenemos un objeto de conexión `conn` que recibe dos eventos de conexión `error` y `open`, `error` saltara cuando surga un error de conexión y el `open` saltara cuando se conecte a la base de datos. `on` y `once` nos dicen que estamos utilizando un `event emmiter`, `once` nos indica que solo salta el evento la primera vez, una sola vez, una vez colocados los `event emmiter` hacemos la conexión y ya saltara el evento que tenga que saltar.
+
+### Utilizar Mongoose
+
+Para utilizar Mongoose debemos definir un Modelo dentro de un Módulo, cargamos Mongoose, indicamos el esquema que tiene e indicarmos a Mongoose que cree un Modelo usando el esquema que definimos:
+
+```js
 var mongoose = require('mongoose');
-var agenteSchema = mongoose.Schema({ name: String,
+var agenteSchema = mongoose.Schema({ 
+    name: String,
     age: Number
 });
 mongoose.model('Agente', agenteSchema);
- © All rights reserved. www.keepcoding.io
-   
-Mongoose
-Guardar un registro:
+```
+
+### ¿Qué podemos hacer con el Modelo
+
+Podemos instanciar el modelo creado para crear nuevos objetos del tipo modelo. Este objeto creado por Mongoose tendrá unas propiedades y métodos que nos facilitan el persistirlo en la base de datos.
+
+**Guardar un registro**:
+
+```js
 var agente = new Agente({name: 'Smith', age: 43});
+
 agente.save(function (err, agenteCreado) {
-if (err) throw err;
-console.log('Agente ' + agenteCreado.name + ' creado');
+   if (err) throw err;
+   console.log('Agente ' + agenteCreado.name + ' creado');
 });
- © All rights reserved. www.keepcoding.io
+```
+
+En este caso se tiene un método `save` que cuando termina de guardar en la base de datos ejecutarara un callback, el cual recibe como parámetros un posible error `err` y el objeto ya persistido en la base de datos y podemos usarlos para mostrar información en la consola.
    
-Mongoose
-Eliminar registros:
-Agente.remove({ [filters] }, function(err) { if (err) return cb(err);
-cb(null);
+**Eliminar registros**:
+
+```js
+Agente.remove({ [filters] }, function(err) { 
+  if (err) return cb(err);
+  cb(null);
 });
- © All rights reserved. www.keepcoding.io
-   
+```
+
+Aquí usamos un método de clase para eliminar.
+
+Ver la documentación de [Mongoose](https://mongoosejs.com/) para más información.
+
+## 70.- Ejercicio: modelos consultas - Parte I (9:55)
+ 
+## 71.- Ejercicio: modelos consultas - Parte II (8:45)
+
 Mongoose
 Crear un método estático a un modelo:
 agenteSchema.statics.deleteAll = function(cb) { Agente.remove({}, function(err) {
@@ -351,6 +395,22 @@ if (err) { return cb(err);}
 return cb(null, rows); });
 });
  © All rights reserved. www.keepcoding.io
+ 
+
+ 
+## 72.- Ejercicio: modificaciones - Parte I (8:54)
+ 
+## 73.- Ejercicio: modificaciones - Parte II (9:39)
+ 
+## 74.- Mongoose métodos (1:49)
+ 
+## 75. Ejercicio: metodos de modelo - Parte I (8:44)
+ 
+## 76.- Ejercicio: metodos de modelo - Parte II (8:07)
+ 
+## 76.1.- Para descargar
+
+
    
 ENHORABUENA!
 Express.js
