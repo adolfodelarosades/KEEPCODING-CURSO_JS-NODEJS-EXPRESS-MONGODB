@@ -374,7 +374,7 @@ Para hacer este ejercicio utilizaremos el proyecto `express_generada_ejs/generad
 * Arrancar la aplicación con `nodemon`
 * Cargar el URL `http://localhost:3000/`
 
-<img src="/images/aplicacion-3000">
+<img src="/images/aplicacion-3000.png">
 
 Nuestra aplicación carga, vamos a hacer unos ajustes:
 
