@@ -119,16 +119,16 @@ Con el comando `find()` podemos consultar todos los documentos de una colección
 
 Comando | Descripción
 --------|------------
-`db.agentes.find()` | 1
-`db.agentes.find({ name : 'Smith'})` | 2
-`db.agentes.find({ _id : ObjectId("55eadb4191233838648570de")})` | 3
-`db.agentes.find({ age: { $gt: 30}}) // $lt, $gte, $lte, ...` | 4
-`db.agentes.find({ age: { $gt: 30, $lt: 40}});` | 5
-`db.agentes.find({ name: { $in: [ 'Jones', 'Brown']}}) //$nin` | 6
-`db.agentes.find({ name: 'Smith', $or: [ { age: { $lt: 30}}, { age: 43 } ] })` | 7
-`// 'Smith' and ( age < 30 or age = 43) ` | 
+`db.agentes.find()` | Dame todos los documentos de la colección `agentes`
+`db.agentes.find({ name : 'Smith'})` | Dame todos los documentos que tengan `name = 'Smith'` de `agentes`
+`db.agentes.find({ _id : ObjectId("55eadb4191233838648570de")})` | Dame todos los documentos con ese `_id` de `agentes`
+`db.agentes.find({ age: { $gt: 30}}) // $lt, $gte, $lte, ...` | Dame todos los documentos con `age > 30` de `agentes`
+`db.agentes.find({ age: { $gt: 30, $lt: 40}});` | Dame todos los documentos con `age > 30 and age < 40` de `agentes`
+`db.agentes.find({ name: { $in: [ 'Jones', 'Brown']}}) //$nin` | Dame todos los documentos con `name` que esten en el array
+`db.agentes.find({ name: 'Smith', $or: [ { age: { $lt: 30}}, { age: 43 } ] })` | Dame todos los documentos que cumplan `'Smith' and ( age < 30 or age = 43)`
    
 ### Bases de datos - MongoDB queries
+
 // subdocuments
 db.agentes.find({ 'producer.company': 'ACME'})
 // arrays
