@@ -289,7 +289,7 @@ MongoClient.connect('mongodb://localhost:27017/', function(err, client) {
 });
 ```
 
-<img src="/images/node-conexion-mongodb">
+<img src="/images/node-conexion-mongodb.png">
 
 Para mas información [npm mongodb](https://www.npmjs.com/package/mongodb)
 
@@ -367,6 +367,141 @@ Aquí usamos un método de clase para eliminar.
 Ver la documentación de [Mongoose](https://mongoosejs.com/) para más información.
 
 ## 70.- Ejercicio: modelos consultas - Parte I (9:55)
+
+Para hacer este ejercicio utilizaremos el proyecto `express_generada_ejs/generada`:
+
+* En la terminal entrar a la carpeta `express_generada_ejs/generada`  con `cd express_generada_ejs/generada`
+* Arrancar la aplicación con `nodemon`
+* Cargar el URL `http://localhost:3000/`
+
+<img src="/images/aplicacion-3000">
+
+Nuestra aplicación carga, vamos a hacer unos ajustes:
+
+* Eliminar de la carpeta `routes` el archivo `users.js`
+* Eliminar las referencias de `users` en `app.js`
+* En `app.js` vamos a cambiar:
+```js
+...
+var indexRouter = require('./routes/index');
+var clientsRouter = require('./routes/clients');
+...
+app.use('/', indexRouter);
+app.use('/clients', clientsRouter);
+```
+
+Por:
+
+```js
+app.use('/',        require('./routes/index'));
+app.use('/clients', require('./routes/clients'));
+```
+ 
+Para ahorrarnos dos variables que no se usaban en ningún otro sitio.
+
+* Comprobar que los URL `http://localhost:3000/` y `http://localhost:3000/clients` sigan funcionando y que `http://localhost:3000/users` ya no se cargue.
+
+### Usar Mongoose en nuestro proyecto
+
+
+Empecemos por instalar mongoose:
+
+```sh
+npm install mongoose --save
+```
+
+Se modifica nuestro archivo `package.json` para añadir la dependencia.
+
+```js
+{
+  "name": "generada",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "mongoose": "^5.8.11",
+    "morgan": "~1.9.1"
+  }
+}
+```
+
+Una vez instalado continuemos con la conexión a la base de datos por medio de Mongoose:
+
+* En la carpeta `generada` crear la carpeta `lib`
+* En la carpeta `lib` crear el archivo `connectMongoose.js`
+* Insertar el siguiente código:
+```js
+"use strict";
+
+var mongoose = require('mongoose');
+
+var db = mongoose.connection;
+
+db.on('error', function(err) {
+    console.log('ERROR: ', err);
+});
+
+db.once('open', function() {
+    console.info('Conectado a MongoDB');
+});
+
+// Si se usa el puerto por default (27017) no es necesario ponerlo
+mongoose.connect('mongodb://localhost/cursenode', { useNewUrlParser: true, useUnifiedTopology: true }); 
+```
+* Incluir la conexión en el archivo `app.js`, hay que observar que en `connectMongoose.js` no hemos exportado nada ya que cuando utilicemos los modelos no nos hara falta especificar la conexión en ningún momento. Incluyamos el siguiente código después de `var app = express();`:
+
+```js
+var app = express();
+
+require('./lib/connectMongoose');
+```
+
+Con esta única línea que añadimos es suficiente para hacer la conexión a la base de datos mediante Mongoose, para comprobarlo, arrancar el servidor con `nodemon` tenemos que se dispara el evento `once('open'` por lo que sale el mensaje `Conectado a MongoDB`, con lo cual apenas se arranca el servidor ya estoy conectado a la base de datos:
+
+<img src="/images/connect-mongoose.png">
+
+Una vez hecha la conexión a la bas de datos vamos a crear una carpeta para los modelos.
+
+* En la carpeta `generada` crear la carpeta `models`.
+* En la carpeta `models` crear el archivo `Agente.js`.
+* Incluir el siguiente código:
+
+```js
+"use strict";
+
+var mongoose = require('mongoose');
+
+// Crear Esquema 
+var agenteSchema = mongoose.Schema({
+    name: String,
+    age: Number
+});
+
+// Crear Modelo
+mongoose.model('Agente', agenteSchema);
+```
+El crear un Schema con los campos definidos nos va a permitir asegurarnos que todos los documentos que caen en esta colección tienen este esquema, Mongoose se encargara de ello, siempre y cuando los metamos utilizando Mongoose, por que si me voy a la base de datos y añado un documento que no tiene este esquema MongoDB me lo va a permitir, ¿Qué va a pasar cuando Mongoose intente recuperar ese documento? Lo recuperara, metera los datos que correspondan a las propiedades del esquema, pero el resto de datos no los gestionará por que no puede asociarlos. Tampoco exporto nada por que para usarlo basta poner `mongoose.model('Agente')`.
+
+* Para que Mongoose conozca el modelo de Agente lo vamos a incluir en `app.js` :
+
+```js
+require('./lib/connectMongoose');
+require('./models/Agente');
+```
+
+Una vez arrancado el servidor se conecta a la base de datos, y Mongoose conocerá los modelos que hemos definido y se puedan utilizar en la aplicación.
+
+
+
+
+
  
 ## 71.- Ejercicio: modelos consultas - Parte II (8:45)
 
