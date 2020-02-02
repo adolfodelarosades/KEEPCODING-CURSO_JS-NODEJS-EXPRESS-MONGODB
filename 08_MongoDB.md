@@ -126,17 +126,49 @@ Comando | Descripción
 `db.agentes.find({ age: { $gt: 30, $lt: 40}});` | Dame todos los documentos con `age > 30 and age < 40` de `agentes`
 `db.agentes.find({ name: { $in: [ 'Jones', 'Brown']}}) //$nin` | Dame todos los documentos con `name` que esten en el array
 `db.agentes.find({ name: 'Smith', $or: [ { age: { $lt: 30}}, { age: 43 } ] })` | Dame todos los documentos que cumplan `'Smith' and ( age < 30 or age = 43)`
+ 
+<img src="/images/shell-05.png">
    
-### Bases de datos - MongoDB queries
+### Bases de datos - MongoDB queries
 
+Otros tipos de busquedas que podemos hacer es por subdocumentos.
+
+```sh
 // subdocuments
 db.agentes.find({ 'producer.company': 'ACME'})
+
 // arrays
-db.agentes.find({ bytes: [ 5, 8, 9 ]}) // array exact db.agentes.find({ bytes: 5}) // array contain db.agentes.find({ 'bytes.0': 5}) // array position
-http://docs.mongodb.org/manual/reference/method/db.collection.find/#db.collection.find http://docs.mongodb.org/manual/tutorial/query-documents/
-   © All rights reserved. www.keepcoding.io
-   
- 
+db.agentes.find({ bytes: [ 5, 8, 9 ]}) // array exact 
+db.agentes.find({ bytes: 5}) // array contain 
+db.agentes.find({ 'bytes.0': 5}) // array position
+```
+
+[https://docs.mongodb.com/manual/reference/method/db.collection.find/index.html](https://docs.mongodb.com/manual/reference/method/db.collection.find/index.html)
+
+[https://docs.mongodb.com/manual/tutorial/query-documents/](https://docs.mongodb.com/manual/tutorial/query-documents/)
+
+<img src="/images/shell-06.png">
+
+### Bases de datos - MongoDB queries
+
+Ordenar (1 Ascendente | -1 Descendente):
+```sh
+db.agentes.find().sort({age: -1})`
+```
+
+Descartar resultados:
+```sh
+db.agentes.find().skip(1).limit(1) 
+db.agentes.findOne({name: 'Brown'}) // igual a limit(1)
+```
+
+Contar:
+```sh
+db.agentes.find().count() // db.agentes.count()
+```
+
+<img src="/images/shell-07.png">
+
 ## 65.- Filtros en MongoDB - Parte II (6:32)
  
 ## 66.- Transacciones (2:52)
@@ -176,13 +208,7 @@ http://docs.mongodb.org/manual/reference/method/db.collection.find/#db.collectio
 
    
 
-Bases de datos - MongoDB queries
-Ordenar:
-db.agentes.find().sort({age: -1}) Descartar resultados:
-db.agentes.find().skip(1).limit(1) db.agentes.findOne({name: 'Brown'}) // igual a limit(1)
-Contar:
-db.agentes.find().count() // db.agentes.count()
- © All rights reserved. www.keepcoding.io
+
    
 Bases de datos - MongoDB queries
 Full Text Search
