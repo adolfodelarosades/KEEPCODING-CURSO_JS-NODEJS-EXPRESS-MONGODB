@@ -487,6 +487,7 @@ var agenteSchema = mongoose.Schema({
 // Crear Modelo
 mongoose.model('Agente', agenteSchema);
 ```
+
 El crear un Schema con los campos definidos nos va a permitir asegurarnos que todos los documentos que caen en esta colección tienen este esquema, Mongoose se encargara de ello, siempre y cuando los metamos utilizando Mongoose, por que si me voy a la base de datos y añado un documento que no tiene este esquema MongoDB me lo va a permitir, ¿Qué va a pasar cuando Mongoose intente recuperar ese documento? Lo recuperara, metera los datos que correspondan a las propiedades del esquema, pero el resto de datos no los gestionará por que no puede asociarlos. Tampoco exporto nada por que para usarlo basta poner `mongoose.model('Agente')`.
 
 * Para que Mongoose conozca el modelo de Agente lo vamos a incluir en `app.js` :
@@ -496,13 +497,45 @@ require('./lib/connectMongoose');
 require('./models/Agente');
 ```
 
-Una vez arrancado el servidor se conecta a la base de datos, y Mongoose conocerá los modelos que hemos definido y se puedan utilizar en la aplicación.
+Una vez arrancado el servidor se conecta a la base de datos, y Mongoose conocerá los modelos que hemos definido y podemos utilizarlos en la aplicación.
 
+### Creación del API
 
+* Dentro de la carpeta `routes` crear la carpeta `apiv1`
+* Dentro de `apiv1` vamos a crear el archivo `agentes.js`
+* Introducir el siguiente código:
 
+```js
+"use strict";
 
+var express = require('express');
+var router = express.Router();
+var mongoose = require('mongoose');
+var Agente = mongoose.model('Agente');
 
- 
+router.get('/', function(req, res, next) {
+    Agente.find().exec( function( err, list){
+        if(err) {
+            next(err);
+            return;
+        }
+        res.json({ ok: true, list: list });
+    });
+});
+
+module.exports = router;
+```
+
+* Cargar este router en nuestro `app.js`
+
+```js
+app.use('/apiv1/agentes', require('./routes/apiv1/agentes'));
+```
+
+* Cargar la URL `http://localhost:3000/apiv1/agentes`:
+
+<img src="/images/api-agentes.png">
+
 ## 71.- Ejercicio: modelos consultas - Parte II (8:45)
 
 Mongoose
