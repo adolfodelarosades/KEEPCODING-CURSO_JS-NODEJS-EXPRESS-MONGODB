@@ -23,8 +23,39 @@ Usar una base de datos como MongoDB puede darnos más rendimiento principalmente
 * No es necesario convertir objetos a tablas y tablas a objetos ([Object- relation Impedance Mismatch](https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch))
    
 ## 61.- Instalación de MongoDB (7:53)
- 
+
+* Ir a la página de [MongoDB](https://www.mongodb.com/es).
+* Ir a la página de descargas para [MongoDB Community Server](https://www.mongodb.com/download-center/enterprise)
+* Descargamos el archivo.
+* El contenido lo metemos en un directorio
+* Crear las carpetas `data\db`
+* Creamos el archivo `start.sh` con el siguiente contenido:
+
+```sh
+bin/mongod --dbpath ./data/db
+```
+O podemos ejecutar eso desde el shell cada que queramos arrancar MongoDB.
+
+* Hay que hacer que el archivo sea ejecutable con `chmod +x start.sh`
+* Ejecutamos el archivo con `./start.sh`
+
+<img src="/images/log-mongod.png">
+
+Nos aparece un log de mongo en el cual nos dice que esta arrancando, la versión del servidor, y nos dice que esta esperando que alguien se conecte en el puero 27017 que es el puerto por defecto donde arranca MongoDB 
+
+* Para parar el servidor de MongoDB simplemente presionamos CRTL+C en la ventana
+* Si observamos la carpeta `data\db` veremos que ya contiene información
+* Para arrancar el shell de mongo debemos ejecutar en ota terminal el comando `mongo`
+
+### Otra forma de instalación de MongoDB mediante brew
+
+Yo segui la siguiente lista de comandos para instalar MongoDB
+
+<img src="/images/brew-install-mongodb.png">
+
 ## 62.- Uso básico MongoDB - Parte I (7:02)
+
+
 
 ### Bases de datos - MongoDB shell basics
 
