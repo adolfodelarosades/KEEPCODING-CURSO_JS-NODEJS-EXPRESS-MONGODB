@@ -125,12 +125,7 @@ Comando | Descripción
 `db.agentes.find({ age: { $gt: 30}}) // $lt, $gte, $lte, ...` | 4
 `db.agentes.find({ age: { $gt: 30, $lt: 40}});` | 5
 `db.agentes.find({ name: { $in: [ 'Jones', 'Brown']}}) //$nin` | 6
-```
-db.agentes.find({ name: 'Smith', $or: [
-  { age: { $lt: 30}},
-  { age: 43 } // 'Smith' and ( age < 30 or age = 43) 
-] })
-``` | 7
+`db.agentes.find({ name: 'Smith', $or: [ { age: { $lt: 30}}, { age: 43 } // 'Smith' and ( age < 30 or age = 43) ] })` | 7
    
 ### Bases de datos - MongoDB queries
 // subdocuments
