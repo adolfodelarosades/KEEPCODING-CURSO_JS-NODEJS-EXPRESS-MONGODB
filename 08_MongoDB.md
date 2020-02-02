@@ -128,7 +128,9 @@ Comando | Descripción
 `db.agentes.find({ name: 'Smith', $or: [ { age: { $lt: 30}}, { age: 43 } ] })` | Dame todos los documentos que cumplan `'Smith' and ( age < 30 or age = 43)`
  
 <img src="/images/shell-05.png">
-   
+
+## 65.- Filtros en MongoDB - Parte II (6:32)
+
 ### Bases de datos - MongoDB queries
 
 Otros tipos de busquedas que podemos hacer es por subdocumentos.
@@ -168,12 +170,64 @@ db.agentes.find().count() // db.agentes.count()
 ```
 
 <img src="/images/shell-07.png">
-
-## 65.- Filtros en MongoDB - Parte II (6:32)
  
 ## 66.- Transacciones (2:52)
- 
+
+### Bases de datos - MongoDB transacción
+
+Cuando hablamos de transacciones estamos hablando de formas de decirle a la base de datos de que agrupe operaciones de forma cuerente. Por ejemplo, buscar un cliente en el banco, verificar su saldo, decrementar su saldo en 100 euros, mostrar su saldo nuevo, todas estas operaciones se deberían ejecutar en una transacción. MongoDB cuenta con la siguiente instrucción: 
+
+`findAndModify` es una operación atómica, lo que nos dará un pequeño respiro transaccional.
+
+```sh
+db.agentes.findAndModify({ 
+   query: { name: "Brown"}, 
+   update: { $inc: { age: 1}}
+})
+```
+
+Lo busca y si lo encuentra lo modifica, no permitiendo que otro lo cambie antes de modificarlo.
+
 ## 67.- Full text search (3:01)
+
+MongoDB tiene una potente capacidad de buscar texto. La busqueda de texto es algo que nos facilita mucho la vida cuando tenemos que buscar cadenas de texto en los distintos campos o atributos que tiene nuestro documento. 
+
+### Bases de datos - MongoDB queries
+
+**Full Text Search**
+
+Crear índice por los campos de texto involucrados:
+
+```sh
+db.agentes.createIndex({title: 'text', lead: 'text', body: 'text'});
+```
+
+Para hacer la búsqueda usar:
+
+```sh
+db.agentes.find({$text:{$search:'smith jones'});
+```
+
+   
+### Bases de datos - MongoDB queries
+
+**Full Text Search**
+
+Frase exacta:
+
+```sh
+db.agentes.find({$text:{$search:'smith jones "el elegido"'});
+```
+
+Excluir un término:
+
+```sh
+db.agentes.find({$text:{$search:'smith jones -mister'});
+```
+
+Más info:
+[https://docs.mongodb.com/manual/tutorial/specify-language-for-text-index/](https://docs.mongodb.com/manual/tutorial/specify-language-for-text-index/)
+
  
 ## 68.- Ejercicio: uso desde Node.js con driver (8:44)
  
@@ -210,29 +264,9 @@ db.agentes.find().count() // db.agentes.count()
 
 
    
-Bases de datos - MongoDB queries
-Full Text Search
-Crear índice por los campos de texto involucrados:
-db.agentes.createIndex({title: 'text', lead: 'text', body: 'text'});
-Para hacer la búsqueda usar:
-db.agentes.find({$text:{$search:'smith jones'});
- © All rights reserved. www.keepcoding.io
+
    
-Bases de datos - MongoDB queries
-Full Text Search
-Frase exacta:
-db.agentes.find({$text:{$search:'smith jones "el elegido"'}); Excluir un término:
-db.agentes.find({$text:{$search:'smith jones -mister'});
-Más info:
-https://docs.mongodb.com/v3.2/text-search/ https://docs.mongodb.com/v3.2/tutorial/specify-language-for-text-index/
-   © All rights reserved. www.keepcoding.io
-   
-Bases de datos - MongoDB transacción
-findAndModify es una operación atómica, lo que nos dará un pequeño respiro transaccional.
-db.agentes.findAndModify({ query: { name: "Brown"}, update: { $inc: { age: 1}}
-})
-Lo busca y si lo encuentra lo modifica, no permitiendo que otro lo cambie antes de modificarlo.
- © All rights reserved. www.keepcoding.io
+
    
 Bases de datos - MongoDB
 Ejemplo de uso MongoDB:
