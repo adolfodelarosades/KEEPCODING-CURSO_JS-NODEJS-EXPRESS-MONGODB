@@ -83,17 +83,19 @@ Desde aquí podremos podremos escribir comandos de MongoDB para:
 
 Vamos a ver algunos comandos que podemos ejecutar:
 
-* `show dbs` Lista las bases de datos que tenemos en nuestro servidor.
-* `use <dbname>` Usar la base de datos que indiquemos.
-* `show collections` Mostrar las colecciones de la base de datos usada.
-* `show users` Mostrar los usarios de la base de datos
-* `db.agentes.find().pretty()` Mostrar el contenido de la colección agentes en formato JSON
-* `db.agentes.insert({name: "Brown", age: 37})` Insertar un documento en la colección agente
-* `db.agentes.remove({_id: ObjectId("55ead88991233838648570dd")})` Eliminar un documento de la colección agente por su id
-* `db.agentes.update({_id: ObjectId("55eadb4191233838648570de")}, {$set: {age: 38}})` Actualizar un documento de agentes -- cuidado con el $set! —-
-* `db.coleccion.drop()` Borra toda la colección 
-* `db.agentes.createIndex({name:1, age:-1})` Crea un indice por `name` y otro por `age`
-* `db.agentes.getIndexes()` Nos indica que indices tiene la colección
+Comando | Descripción
+--------|------------
+`show dbs` | Lista las bases de datos que tenemos en nuestro servidor.
+`use <dbname>` | Usar la base de datos que indiquemos.
+`show collections` | Mostrar las colecciones de la base de datos usada.
+`show users` | Mostrar los usarios de la base de datos.
+`db.agentes.find().pretty()` | Mostrar el contenido de la colección agentes en formato JSON.
+`db.agentes.insert({name: "Brown", age: 37})` | Insertar un documento en la colección agente.
+`db.agentes.remove({_id: ObjectId("55ead88991233838648570dd")})` | Eliminar un documento de la colección agente por su id
+`db.agentes.update({_id: ObjectId("55eadb4191233838648570de")}, {$set: {age: 38}})` | Actualizar un documento de agentes -- cuidado con el $set! —-
+`db.coleccion.drop()` | Borra toda la colección 
+`db.agentes.createIndex({name:1, age:-1})` | Crea un indice por `name` y otro por `age`
+`db.agentes.getIndexes()` | Nos indica que indices tiene la colección
 
 Mas operaciones en la [referencia rápida a la shell de MongoDB](https://docs.mongodb.com/manual/reference/mongo-shell/)
 
