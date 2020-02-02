@@ -111,14 +111,28 @@ Mas operaciones en la [referencia rápida a la shell de MongoDB](https://docs.mo
 
 ## 64.- Filtros en MongoDB - Parte I (6:15)
 
-Bases de datos - MongoDB queries
-db.agentes.find({ name : 'Smith'})
-db.agentes.find({ _id : ObjectId("55eadb4191233838648570de")}) db.agentes.find({ age: { $gt: 30}}) // $lt, $gte, $lte, ... db.agentes.find({ age: { $gt: 30, $lt: 40}}); db.agentes.find({ name: { $in: [ 'Jones', 'Brown']}}) //$nin db.agentes.find({ name: 'Smith', $or: [
+Veamos otras formas de buscar documentos en nuestras colecciones.
+
+### Bases de datos - MongoDB queries
+
+Con el comando `find()` podemos consultar todos los documentos de una colección, adicionalmente podemos pasar un varios parametros para filtra la información que nos devuelve, los siguientes son algunos ejemplos:
+
+Comando | Descripción
+--------|------------
+`db.agentes.find()` | 1
+`db.agentes.find({ name : 'Smith'})` | 2
+`db.agentes.find({ _id : ObjectId("55eadb4191233838648570de")})` | 3
+`db.agentes.find({ age: { $gt: 30}}) // $lt, $gte, $lte, ...` | 4
+`db.agentes.find({ age: { $gt: 30, $lt: 40}});` | 5
+`db.agentes.find({ name: { $in: [ 'Jones', 'Brown']}}) //$nin` | 6
+`
+db.agentes.find({ name: 'Smith', $or: [
   { age: { $lt: 30}},
-{ age: 43 } // 'Smith' and ( age < 30 or age = 43) ] })
-  © All rights reserved. www.keepcoding.io
+  { age: 43 } // 'Smith' and ( age < 30 or age = 43) 
+] })
+` | 7
    
-Bases de datos - MongoDB queries
+### Bases de datos - MongoDB queries
 // subdocuments
 db.agentes.find({ 'producer.company': 'ACME'})
 // arrays
