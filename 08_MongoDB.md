@@ -653,20 +653,271 @@ router.delete('/:id', function(req, res, next) {
  
 ## 74.- Mongoose métodos (1:49)
 
-Mongoose
-Crear un método estático a un modelo:
-agenteSchema.statics.deleteAll = function(cb) { Agente.remove({}, function(err) {
-if (err) return cb(err);
-cb(null); });
+Con Mongoose también podemos crear métodos en nuestros modelos. Hay dos tipos de métodos:
+
+* Métodos estáticos
+* Métodos de instancia
+
+### Métodos Estáticos
+
+Un método estático es un método que aplica a distintas instancias de nuestro modelo.
+
+El siguiente es un ejemplo de un método estático para borrar todos los agentes:
+
+```js
+agenteSchema.statics.deleteAll = function(cb) { 
+   Agente.remove({}, function(err) {
+      if (err) return cb(err);
+      cb(null); 
+   });
 };
- © All rights reserved. www.keepcoding.io
-   
-Mongoose
-Crear un método de instancia a un modelo:
-agenteSchema.methods.findSimilarAges = function (cb) { return this.model('Agente').find({ age: this.age }, cb);
+```
+
+Los métodos estáticos los añadimos metiendo en el Schema `statics`.
+
+### Métodos de instancia
+
+Si quisieramos hacer un método que afecte a un solo agente, tendríamos que crear un método de instacia, es decir que cada una de las instancias tendrían ese método que actuaría solo para esa instancia, no para todos.
+
+El siguiente es un ejemplo de un método de instancia a un modelo:
+
+```js
+agenteSchema.methods.findSimilarAges = function (cb) { 
+   return this.model('Agente').find({ age: this.age }, cb);
 }
- © All rights reserved. www.keepcoding.io
-   
+``` 
+
+Los métodos de instancia los añadimos metiendo en el Schema `methods`. En este caso `this` apunta al agente.
+
+## 75. Ejercicio: metodos de modelo - Parte I (8:44)
+
+Hagamos un ejemplo con los métodos estáticos.
+
+En nuestro modelo de Agente, archivo `Agente.js` vamos a crearnos un método estático para listar.
+
+* Incluimos el siguiente código en `Agente.js`:
+
+```js
+agenteSchema.statics.list = function(filter, callback) {
+    var query = Agente.find(filter);
+
+    query.exec(callback);
+};
+
+// Crear Modelo
+var Agente = mongoose.model('Agente', agenteSchema);
+```
+
+* Este método estatico `list` lo usaremos en el Middleware de recuperar lista de agentes en `agentes.js`:
+Cambiar:
+```js
+// Recuperar lista de agentes
+router.get('/', function(req, res, next) {
+    Agente.find().exec(function(err, list) {
+        if (err) {
+            next(err);
+            return;
+        }
+        res.json({ ok: true, list: list });
+    });
+});
+```
+
+Por:
+
+```js
+// Recuperar lista de agentes
+router.get('/', function(req, res, next) {
+    Agente.list(function(err, list) {
+        if (err) {
+            next(err);
+            return;
+        }
+        res.json({ ok: true, list: list });
+    });
+});
+```
+
+* Si ejeculaos el URL `http://localhost:3000/apiv1/agentes` nos sigue saliendo exactamente lo mismo:
+
+<img src="/images/api-agentes-delete.png">
+
+* Si añadimos un parámetro de filtro a nuestro método `list` nos debbe devolver solo lo que pidamos:
+
+```js
+// Recuperar lista de agentes
+router.get('/', function(req, res, next) {
+    Agente.list({ name: 'Jones' }, function(err, list) {
+        if (err) {
+            next(err);
+            return;
+        }
+        res.json({ ok: true, list: list });
+    });
+});
+```
+
+* Si ejeculaos el URL `http://localhost:3000/apiv1/agentes` nos sale la lista filtrada:
+
+<img src="/images/filter-jones.png">
+
+Vamos a hacer que el parámetro que mandemos como filtro se mande en la petición como un parámetro y lo podamos recibir, para hacer esto más dinámico.
+
+* En `agente.js` vamos a cambiar:
+
+```js
+// Recuperar lista de agentes
+router.get('/', function(req, res, next) {
+    Agente.list({ name: 'Jones' }, function(err, list) {
+        if (err) {
+            next(err);
+            return;
+        }
+        res.json({ ok: true, list: list });
+    });
+});
+```
+
+Por: 
+
+```js
+// Recuperar lista de agentes
+router.get('/', function(req, res, next) {
+    var name = req.query.name;
+    var filter = {};
+    if (name) {
+        filter.name = name;
+    }
+    Agente.list(filter, function(err, list) {
+        if (err) {
+            next(err);
+            return;
+        }
+        res.json({ ok: true, list: list });
+    });
+});
+
+```
+
+* Si ejeculaos el URL `http://localhost:3000/apiv1/agentes` nos vuelven a salir todos los registros:
+
+<img src="/images/api-agentes-delete.png">
+
+* Si ejeculaos el URL `http://localhost:3000/apiv1/agentes?name=Smith` nos filtra los registros:
+
+<img src="/images/filter-smith.png">
+
+Vamos a añadir que filtre por edad:
+
+```js
+// Recuperar lista de agentes
+router.get('/', function(req, res, next) {
+    var name = req.query.name;
+    var age = req.query.age;
+
+    var filter = {};
+
+    if (name) {
+        filter.name = name;
+    }
+
+    // Validar que age venga algo, aun que sea 0
+    if (typeof age !== 'undefined') {
+        filter.age = age;
+    }
+    
+    Agente.list(filter, function(err, list) {
+        if (err) {
+            next(err);
+            return;
+        }
+        res.json({ ok: true, list: list });
+    });
+});
+
+```
+
+* Si ejeculaos el URL `http://localhost:3000/apiv1/agentes?age=20` nos filtra los registros por edad:
+
+<img src="/images/filter-age.png">
+
+* Incluso podríamos filtar por ambos datos con el URL `http://localhost:3000/apiv1/agentes?name=Jones&age=20` :
+
+<img src="/images/filter-name-age.png">
+
+## 76.- Ejercicio: metodos de modelo - Parte II (8:07)
+
+Vamos a añadir un parámetro para que pueda limitar el número de registros que regresa:
+
+* En `agente.js` recibimos el parámetro `limit` y se lo pasamos al método estático `list`:
+
+```js
+// Recuperar lista de agentes
+router.get('/', function(req, res, next) {
+    var name = req.query.name;
+    var age = req.query.age;
+    var limit = parseInt(req.query.limit) || null;
+
+    var filter = {};
+
+    if (name) {
+        filter.name = name;
+    }
+
+    // Validar que age venga algo, aun que sea 0
+    if (typeof age !== 'undefined') {
+        filter.age = age;
+    }
+
+    Agente.list(filter, limit, function(err, list) {
+        if (err) {
+            next(err);
+            return;
+        }
+        res.json({ ok: true, list: list });
+    });
+});
+```
+
+* En `Agentes.js` el método `list` debe recibir el parámetro `limit` que hay que agregarselo al `query`:
+
+```js
+agenteSchema.statics.list = function(filter, limit, callback) {
+    var query = Agente.find(filter);
+    query.limit(limit);
+    query.exec(callback);
+};
+```
+
+* Si ejeculaos el URL `http://localhost:3000/apiv1/agentes?limit=2` nos limita el número de registros a listar:
+
+<img src="/images/filter-age.png">
+
+
+```js
+
+```
+
+```js
+
+```
+
+```js
+
+```
+
+```js
+
+```
+
+```js
+
+```
+
+```js
+
+```
+
 Mongoose
 Listando registros:
 agenteSchema.statics.list = function(cb) { var query = Agente.find({}); query.sort('name');
@@ -679,9 +930,9 @@ return cb(null, rows); });
 });
  © All rights reserved. www.keepcoding.io
  
-## 75. Ejercicio: metodos de modelo - Parte I (8:44)
+
  
-## 76.- Ejercicio: metodos de modelo - Parte II (8:07)
+
  
 ## 76.1.- Para descargar
 
