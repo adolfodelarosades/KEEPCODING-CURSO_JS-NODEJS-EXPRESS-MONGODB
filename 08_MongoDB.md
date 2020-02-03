@@ -889,57 +889,168 @@ agenteSchema.statics.list = function(filter, limit, callback) {
 };
 ```
 
-* Si ejeculaos el URL `http://localhost:3000/apiv1/agentes?limit=2` nos limita el número de registros a listar:
+* Si ejecutamos el URL `http://localhost:3000/apiv1/agentes?limit=2` nos limita el número de registros a listar:
 
 <img src="/images/filter-age.png">
 
+Vamos a añadir un parámetro para que pueda saltarse (skip) registros que viene bien para la páginación:
+
+* En `agente.js` recibimos el parámetro `skip` y se lo pasamos al método estático `list`:
 
 ```js
+// Recuperar lista de agentes
+router.get('/', function(req, res, next) {
+    var name = req.query.name;
+    var age = req.query.age;
+    var limit = parseInt(req.query.limit) || null;
+    var slip = parseInt(req.query.skip) || null;
 
-```
+    var filter = {};
 
-```js
+    if (name) {
+        filter.name = name;
+    }
 
-```
+    // Validar que age venga algo, aun que sea 0
+    if (typeof age !== 'undefined') {
+        filter.age = age;
+    }
 
-```js
-
-```
-
-```js
-
-```
-
-```js
-
-```
-
-```js
-
-```
-
-Mongoose
-Listando registros:
-agenteSchema.statics.list = function(cb) { var query = Agente.find({}); query.sort('name');
-query.skip(500);
-query.limit(100);
-query.select('name age');
-return query.exec(function(err, rows) {
-if (err) { return cb(err);}
-return cb(null, rows); });
+    Agente.list(filter, limit, skip, function(err, list) {
+        if (err) {
+            next(err);
+            return;
+        }
+        res.json({ ok: true, list: list });
+    });
 });
- © All rights reserved. www.keepcoding.io
- 
+```
 
- 
+* En `Agentes.js` el método `list` debe recibir el parámetro `skip` que hay que agregarselo al `query`:
 
- 
-## 76.1.- Para descargar
+```js
+agenteSchema.statics.list = function(filter, limit, skip, callback) {
+    var query = Agente.find(filter);
+    query.limit(limit);
+    query.skip(skip);
+    query.exec(callback);
+};
+```
 
+* Si ejecutamos el URL `http://localhost:3000/apiv1/agentes?skip=2` nos muestra los registros a partir del 3 saltandose los dos primeros:
 
-   
-ENHORABUENA!
-Express.js
-    
-© All rights reserved. www.keepcoding.io
-  
+<img src="/images/filter-age.png">
+
+Ahora vamos a añadir un parámetro para indicar los campos que queremos mostrar (fields):
+
+* En `agente.js` recibimos el parámetro `fields` y se lo pasamos al método estático `list`:
+
+```js
+// Recuperar lista de agentes
+router.get('/', function(req, res, next) {
+    var name = req.query.name;
+    var age = req.query.age;
+    var limit = parseInt(req.query.limit) || null;
+    var skip = parseInt(req.query.skip) || null;
+    var fields = req.query.fields || null;
+
+    var filter = {};
+
+    if (name) {
+        filter.name = name;
+    }
+
+    // Validar que age venga algo, aun que sea 0
+    if (typeof age !== 'undefined') {
+        filter.age = age;
+    }
+
+    Agente.list(filter, limit, skip, fields, function(err, list) {
+        if (err) {
+            next(err);
+            return;
+        }
+        res.json({ ok: true, list: list });
+    });
+});
+
+```
+* En `Agentes.js` el método `list` debe recibir el parámetro `fields` que hay que agregarselo al `query`:
+
+```js
+agenteSchema.statics.list = function(filter, limit, skip, fields, callback) {
+    var query = Agente.find(filter);
+    query.limit(limit);
+    query.skip(skip);
+    query.select(fields);
+    query.exec(callback);
+};
+```
+
+* Si ejecutamos el URL `http://localhost:3000/apiv1/agentes?fields=name` nos muestra los registros solo con el campo `name`:
+
+<img src="/images/filter-fields.png">
+
+* Si ejecutamos el URL `http://localhost:3000/apiv1/agentes?fields=name age` nos muestra los registros solo con el campo `name` y `age` los separamos con espacio:
+
+<img src="/images/filter-fields-2.png">
+
+**El campo `_id` siempre nos lo da aunque no se lo pidamos**
+
+Ahora vamos a añadir un parámetro para indicar el orden (sort) de los registros:
+
+* En `agente.js` recibimos el parámetro `sort` y se lo pasamos al método estático `list`:
+
+```js
+// Recuperar lista de agentes
+router.get('/', function(req, res, next) {
+    var name = req.query.name;
+    var age = req.query.age;
+    var limit = parseInt(req.query.limit) || null;
+    var skip = parseInt(req.query.skip) || null;
+    var fields = req.query.fields || null;
+    var sort = req.query.sort || null;
+
+    var filter = {};
+
+    if (name) {
+        filter.name = name;
+    }
+
+    // Validar que age venga algo, aun que sea 0
+    if (typeof age !== 'undefined') {
+        filter.age = age;
+    }
+
+    Agente.list(filter, limit, skip, fields, sort, function(err, list) {
+        if (err) {
+            next(err);
+            return;
+        }
+        res.json({ ok: true, list: list });
+    });
+});
+
+```
+* En `Agentes.js` el método `list` debe recibir el parámetro `sort` que hay que agregarselo al `query`:
+
+```js
+agenteSchema.statics.list = function(filter, limit, skip, fields, sort, callback) {
+    var query = Agente.find(filter);
+    query.limit(limit);
+    query.skip(skip);
+    query.select(fields);
+    query.sort(sort);
+    query.exec(callback);
+};
+```
+
+* Si ejecutamos el URL `http://localhost:3000/apiv1/agentes?sort=name` nos muestra los registros ordenados ascendentemente por edad:
+
+<img src="/images/filter-sort.png">
+
+* Podemos ejecutamos el URL con varios parámetros combinados y nos muestra los registros que cumplan todos los criterios: 
+
+`http://localhost:3000/apiv1/agentes?skip=1&fields=age name&sort=age` :
+
+<img src="/images/filter-many.png">
